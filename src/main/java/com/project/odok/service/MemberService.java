@@ -2,8 +2,8 @@ package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.TokenDto;
-import com.project.odok.dto.requestDto.LoginRequestDto;
-import com.project.odok.dto.requestDto.SignupRequestDto;
+import com.project.odok.security.exception.requestDto.LoginRequestDto;
+import com.project.odok.security.exception.requestDto.SignupRequestDto;
 import com.project.odok.entity.Member;
 import com.project.odok.entity.RefreshToken;
 import com.project.odok.repository.MemberRepository;

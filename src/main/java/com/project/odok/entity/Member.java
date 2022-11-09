@@ -1,7 +1,7 @@
 package com.project.odok.entity;
 
 
-import com.project.odok.dto.requestDto.SignupRequestDto;
+import com.project.odok.security.exception.requestDto.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
