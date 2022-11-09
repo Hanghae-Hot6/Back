@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@RestController("/user")
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class MemberController {
 
     private final MemberService memberService;

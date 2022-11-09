@@ -34,7 +34,7 @@ public class MemberService {
 
     public ResponseDto<?> signUp(SignupRequestDto signupRequestDto) {
         Member member = new Member(signupRequestDto, passwordEncoder.encode(signupRequestDto.getPassword()));
-        entityManager.persist(member);
+//        entityManager.persist(member);
         memberRepository.save(member);
         return ResponseDto.success("회원가입 되었습니다.");
     }
