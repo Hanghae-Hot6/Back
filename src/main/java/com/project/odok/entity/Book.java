@@ -9,12 +9,13 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
-public class Book {
+public class Book extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long bookId;
     private String bookName;
     private String bookImage;
     private String writer;
     private String summary;
+    private String publisher;
 }

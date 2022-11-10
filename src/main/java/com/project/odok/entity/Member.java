@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Member {
+public class Member extends TimeStamped {
     @Id
     private String memberId;
     private String email;
