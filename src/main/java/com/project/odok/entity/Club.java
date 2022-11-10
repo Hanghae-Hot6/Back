@@ -6,17 +6,17 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class Club {
+public class Club extends TimeStamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long clubId;
     private String clubName;
     private String clubIntro;
-
-    @OneToOne
-    private Book book;
     private String plan;
+    private String book1;
+    private String book2;
+    private String book3;
     private String location;
     private String schedule;
     private Long memberLimit;

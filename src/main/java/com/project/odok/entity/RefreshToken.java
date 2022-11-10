@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor
-public class RefreshToken {
+public class RefreshToken extends TimeStamped{
 
     @Id
     @Column(name = "rt_key")
