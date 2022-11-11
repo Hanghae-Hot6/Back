@@ -24,10 +24,6 @@ public class Club extends TimeStamped{
     @Column(nullable = false)
     private String plan;
     @Column(nullable = false)
-    private String book1;
-    private String book2;
-    private String book3;
-    @Column(nullable = false)
     private String location;
     @Column(nullable = false)
     private String schedule;
@@ -50,9 +46,6 @@ public class Club extends TimeStamped{
         this.clubName = clubRequestDto.getClubName();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.plan = clubRequestDto.getPlan();
-        this.book1 = clubRequestDto.getBook1();
-        this.book2 = clubRequestDto.getBook2();
-        this.book3 = clubRequestDto.getBook3();
         this.location = clubRequestDto.getLocation();
         this.schedule = clubRequestDto.getSchedule();
         this.memberLimit = clubRequestDto.getMemberLimit();
@@ -66,9 +59,6 @@ public class Club extends TimeStamped{
         this.clubName = clubRequestDto.getClubName();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.plan = clubRequestDto.getPlan();
-        this.book1 = clubRequestDto.getBook1();
-        this.book2 = clubRequestDto.getBook2();
-        this.book3 = clubRequestDto.getBook3();
         this.location = clubRequestDto.getLocation();
         this.schedule = clubRequestDto.getSchedule();
         this.memberLimit = clubRequestDto.getMemberLimit();

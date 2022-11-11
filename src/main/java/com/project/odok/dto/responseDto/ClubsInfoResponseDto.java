@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ClubListResponseDto {
+public class ClubsInfoResponseDto {
     private String thumbnail;
     private String clubName;
     private String memberId;
@@ -15,7 +15,7 @@ public class ClubListResponseDto {
     private Long memberLimit;
 
 
-    public ClubListResponseDto(Club club){
+    public ClubsInfoResponseDto(Club club){
         this.thumbnail = club.getImageUrl();
         this.clubName = club.getClubName();
         this.memberId = club.getMember().getMemberId();

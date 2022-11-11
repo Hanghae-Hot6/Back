@@ -2,7 +2,7 @@ package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.requestDto.ClubRequestDto;
-import com.project.odok.dto.responseDto.ClubListResponseDto;
+import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.Club;
 import com.project.odok.entity.ClubMember;
@@ -49,11 +49,11 @@ public class ClubService {
     public ResponseDto<?> getClubList() {
 
         List<Club> clubList = clubRepository.findAllByOrderByCreatedAtDesc();
-        List<ClubListResponseDto> clubResponseDtoList = new ArrayList<>();
+        List<ClubsInfoResponseDto> clubResponseDtoList = new ArrayList<>();
 
         for(Club club : clubList){
 
-            clubResponseDtoList.add(new ClubListResponseDto(club));
+            clubResponseDtoList.add(new ClubsInfoResponseDto(club));
         }
         return ResponseDto.success(clubResponseDtoList);
     }

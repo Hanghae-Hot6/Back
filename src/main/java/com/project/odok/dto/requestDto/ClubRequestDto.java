@@ -14,12 +14,6 @@ public class ClubRequestDto {
 
     private String plan;
 
-    private String book1;
-
-    private String book2;
-
-    private String book3;
-
     private String location;
 
     private String schedule;
