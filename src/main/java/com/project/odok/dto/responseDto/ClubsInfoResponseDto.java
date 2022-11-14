@@ -12,7 +12,7 @@ public class ClubsInfoResponseDto {
     private String memberId;
     private String category;
     private String summary;
-    private Long memberLimit;
+    private String memberLimit;
 
 
     public ClubsInfoResponseDto(Club club){

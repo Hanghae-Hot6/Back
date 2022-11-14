@@ -5,13 +5,16 @@ import com.project.odok.dto.requestDto.ClubRequestDto;
 import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.Club;
+import com.project.odok.entity.ClubBook;
 import com.project.odok.entity.ClubMember;
 import com.project.odok.entity.Member;
+import com.project.odok.repository.ClubBookReqository;
 import com.project.odok.repository.ClubMemberRepository;
 import com.project.odok.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -33,9 +36,9 @@ public class ClubService {
 
 
     // 모임 등록
-    public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, Member member) throws IOException {
+    public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, MultipartFile imageUrl, Member member) throws IOException {
 
-        Club club = new Club(clubRequestDto, member, s3UploadService, dir);
+        Club club = new Club(clubRequestDto, member, imageUrl, s3UploadService, dir);
         clubRepository.save(club);
 
         ClubMember clubMember = new ClubMember(club,member);
@@ -70,14 +73,14 @@ public class ClubService {
 
     // 모임 수정
     @Transactional
-    public ResponseDto<?> updateClub(Long clubId, Member member, ClubRequestDto clubRequestDto) throws IOException{
+    public ResponseDto<?> updateClub(Long clubId, Member member, ClubRequestDto clubRequestDto, MultipartFile imageUrl) throws IOException{
 
         Club club = clubRepository.findById(clubId).orElseThrow(()-> new NullPointerException("해당 모임이 존재하지 않습니다."));
 
         if (validateMember(member, club))
             throw new IllegalArgumentException("모임의 리더와 현재 사용자가 일치하지 않습니다.");
 
-        club.update(clubRequestDto, s3UploadService, dir);
+        club.update(clubRequestDto,imageUrl, s3UploadService, dir);
 
         return ResponseDto.success("모임정보 수정 완료");
     }
