@@ -1,5 +1,6 @@
 package com.project.odok.controller;
 
+import com.project.odok.dto.ResponseDto;
 import com.project.odok.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +15,13 @@ public class BookController {
 
     private final BookService bookService;
 
+//    @GetMapping("/search/{keyword}")
+//    public String searchBook(@PathVariable String keyword){
+//        return bookService.searchResult(keyword);
+//    }
+
     @GetMapping("/search/{keyword}")
-    public String searchBook(@PathVariable String keyword){
+    public ResponseDto<?> searchBook(@PathVariable String keyword){
         return bookService.searchResult(keyword);
     }
 }
