@@ -41,6 +41,9 @@ public class Club extends TimeStamped{
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<ClubMember> clubMemberList;
 
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    private List<ClubBook> clubBookList;
+
 
     public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException {
         this.clubName = clubRequestDto.getClubName();
