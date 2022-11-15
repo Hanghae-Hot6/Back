@@ -1,12 +1,13 @@
 package com.project.odok.entity;
 
 import lombok.Getter;
-import org.springframework.data.util.Lazy;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class ClubMember extends TimeStamped {
 
     @Id
@@ -18,4 +19,10 @@ public class ClubMember extends TimeStamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    public ClubMember(Club club, Member member){
+        this.club = club;
+        this.member = member;
+
+    }
 }
