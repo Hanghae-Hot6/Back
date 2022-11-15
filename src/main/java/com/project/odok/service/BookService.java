@@ -1,6 +1,8 @@
 package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
+import com.project.odok.entity.Book;
+import com.project.odok.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.json.simple.JSONArray;
@@ -8,18 +10,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+//import org.springframework.http.RequestEntity;
+//import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+//import org.springframework.web.client.RestTemplate;
+//import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.*;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+//import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -30,36 +32,12 @@ public class BookService {
 //    @Value("${clientId}") String clientId;
 //    @Value("${clientSecret}") String clientSecret;
 
+    private final BookRepository bookRepository;
+
     private final String clientId = null;
     private final String clientSecret = null;
 
-//    public String searchResult(String keyword) {
-//        String encode = Base64.getEncoder().encodeToString(keyword.getBytes(StandardCharsets.UTF_8));
-//
-//        URI uri = UriComponentsBuilder.fromUriString("https://openapi.naver.com/")
-//                .path("v1/search/book.json")
-//                .queryParam("query", keyword)
-//                .queryParam("display", 3)
-//                .queryParam("start", 1)
-//                .encode()
-//                .build()
-//                .toUri();
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//
-//        RequestEntity<Void> req = RequestEntity
-//                .get(uri)
-//                .header("X-Naver-Client-Id", clientId)
-//                .header("X-Naver-Client-Secret", clientSecret)
-//                .build();
-//
-//        ResponseEntity<String> result = restTemplate.exchange(req, String.class);
-//
-//        return result.getBody();
-//    }
-
-        public ResponseDto<?> searchResult(String keyword){
+        public ResponseDto<?> searchResult(String keyword, String start, String display){
 
             String bookTitle = null;
 
@@ -69,8 +47,7 @@ public class BookService {
                 throw new RuntimeException("검색어 인코딩 실패",e);
             }
 
-            String apiURL = "https://openapi.naver.com/v1/search/book?query=" + bookTitle + "&display=" + 5 + "&start=" + 1;
-
+            String apiURL = "https://openapi.naver.com/v1/search/book?query=" + bookTitle  + "&start=" + start + "&display=" + display;
 
             Map<String, String> requestHeaders = new HashMap<>();
             requestHeaders.put("X-Naver-Client-Id", clientId);
@@ -91,14 +68,21 @@ public class BookService {
                     String image = (String) tmp.get("image");
                     String author = (String) tmp.get("author");
                     String publisher = (String) tmp.get("publisher");
+                    String pubdate = (String) tmp.get("pubdate");
                     String isbn = (String) tmp.get("isbn");
+                    String description = (String) tmp.get("description");
+
+                    if(!bookRepository.existsByIsbn(isbn)){
+                        Book book = new Book(title, link, image, author, publisher, isbn);
+                        bookRepository.save(book);
+                    }
 
                     Map<String, Object> bookInfo = new HashMap<>();
 
                     bookInfo.put("image", image);
                     bookInfo.put("title", title);
                     bookInfo.put("isbn", isbn);
-                    bookInfo.put("no", i);
+                    bookInfo.put("pubdate", pubdate);
 
                     searchList.add(bookInfo);
 
