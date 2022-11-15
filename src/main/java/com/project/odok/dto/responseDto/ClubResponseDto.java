@@ -14,7 +14,7 @@ public class ClubResponseDto {
     private String plan;
     private String location;
     private String schedule;
-    private Long memberLimit;
+    private String memberLimit;
     private String category;
     private String summary;
     private String imageUrl;

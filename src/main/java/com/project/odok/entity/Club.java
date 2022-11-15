@@ -4,6 +4,7 @@ import com.project.odok.dto.requestDto.ClubRequestDto;
 import com.project.odok.service.S3UploadService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class Club extends TimeStamped{
     @Column(nullable = false)
     private String schedule;
     @Column(nullable = false)
-    private Long memberLimit;
+    private String memberLimit;
     @Column(nullable = false)
     private String category;
     @Column(nullable = false)
@@ -44,7 +45,7 @@ public class Club extends TimeStamped{
     private List<ClubBook> clubBookList;
 
 
-    public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException {
+    public Club(ClubRequestDto clubRequestDto, Member member, MultipartFile imageUrl, S3UploadService s3UploadService, String dir) throws IOException {
         this.clubName = clubRequestDto.getClubName();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.plan = clubRequestDto.getPlan();
@@ -53,11 +54,11 @@ public class Club extends TimeStamped{
         this.memberLimit = clubRequestDto.getMemberLimit();
         this.category = clubRequestDto.getCategory();
         this.summary = clubRequestDto.getSummary();
-        this.imageUrl = s3UploadService.upload(clubRequestDto.getImageUrl(), dir);
+        this.imageUrl = s3UploadService.upload(imageUrl, dir);
         this.member = member;
     }
 
-    public void update(ClubRequestDto clubRequestDto, S3UploadService s3UploadService, String dir) throws IOException{
+    public void update(ClubRequestDto clubRequestDto, MultipartFile imageUrl, S3UploadService s3UploadService, String dir) throws IOException{
         this.clubName = clubRequestDto.getClubName();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.plan = clubRequestDto.getPlan();
@@ -66,6 +67,6 @@ public class Club extends TimeStamped{
         this.memberLimit = clubRequestDto.getMemberLimit();
         this.category = clubRequestDto.getCategory();
         this.summary = clubRequestDto.getSummary();
-        this.imageUrl = s3UploadService.upload(clubRequestDto.getImageUrl(), dir);
+        this.imageUrl = s3UploadService.upload(imageUrl, dir);
     }
 }

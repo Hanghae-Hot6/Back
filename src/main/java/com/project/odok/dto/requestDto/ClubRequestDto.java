@@ -2,9 +2,11 @@ package com.project.odok.dto.requestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ClubRequestDto {
 
@@ -18,11 +20,10 @@ public class ClubRequestDto {
 
     private String schedule;
 
-    private Long memberLimit;
+    private String memberLimit;
 
     private String category;
 
     private String summary;
 
-    private MultipartFile imageUrl;
 }
