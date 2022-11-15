@@ -1,17 +1,14 @@
 package com.project.odok.controller;
 
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.dto.requestDto.LoginRequestDto;
-import com.project.odok.dto.requestDto.SignupRequestDto;
-import com.project.odok.security.UserDetailsImpl;
+import com.project.odok.security.exception.requestDto.LoginRequestDto;
+import com.project.odok.security.exception.requestDto.SignupRequestDto;
 import com.project.odok.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
