@@ -23,15 +23,26 @@ public class ClubController {
 
 
     // 모임 등록
+//    @PostMapping
+//    public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
+//                                     @RequestPart(value = "imageUrl", required = false)MultipartFile imageUrl,
+//                                     @RequestParam("formData2") String dataList) throws IOException {
+//
+//        ObjectMapper objectMapper = new ObjectMapper().registerModule(new SimpleModule());
+//        ClubRequestDto clubRequestDto = objectMapper.readValue(dataList, new TypeReference<>(){});
+//
+//        System.out.println(clubRequestDto.getBook1());
+//        System.out.println(clubRequestDto.getClubIntro());
+//
+//        return clubService.createClub(clubRequestDto, imageUrl, userDetails.getMember());
+//    }
     @PostMapping
     public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                     @RequestPart(value = "imageUrl", required = false)MultipartFile imageUrl,
-                                     @RequestParam("data") String dataList) throws IOException {
+                                     @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new SimpleModule());
-        ClubRequestDto clubRequestDto = objectMapper.readValue(dataList, new TypeReference<>(){});
-
-        return clubService.createClub(clubRequestDto, imageUrl, userDetails.getMember());
+        System.out.println("Controller"+ clubRequestDto.getBook1());
+        System.out.println("Controller: " + userDetails.getUsername());
+        return clubService.createClub(clubRequestDto, userDetails.getMember());
     }
 
 

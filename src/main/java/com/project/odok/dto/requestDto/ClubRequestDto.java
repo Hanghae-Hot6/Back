@@ -3,8 +3,11 @@ package com.project.odok.dto.requestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClubRequestDto {
@@ -24,6 +27,8 @@ public class ClubRequestDto {
     private String category;
 
     private String summary;
+
+    private MultipartFile imageUrl;
 
     private String book1;
 

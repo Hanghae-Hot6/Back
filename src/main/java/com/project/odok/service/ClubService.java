@@ -33,11 +33,38 @@ public class ClubService {
 
 
     // 모임 등록
-    public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, MultipartFile imageUrl, Member member) throws IOException {
+//    public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, MultipartFile imageUrl, Member member) throws IOException {
+//
+//        Club club = new Club(clubRequestDto, member);
+//        clubRepository.save(club);
+//
+//        Book book1 = bookRepository.findByIsbn(clubRequestDto.getBook1());
+//        Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
+//        Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());
+//
+//        ClubBook clubBook = new ClubBook(club, book1, book2, book3);
+//        clubBookReqository.save(clubBook);
+//
+//        ClubMember clubMember = new ClubMember(club, member);
+//        clubMemberRepository.save(clubMember);
+//
+//        return ResponseDto.success("모임 등록 완료");
+//    }
 
-        Club club = new Club(clubRequestDto, member, imageUrl, s3UploadService, dir);
+    public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, Member member) throws IOException{
+
+        System.out.println("Service : 서비스 진입");
+        System.out.println("Service : " + clubRequestDto.getClubName());
+        System.out.println("Service : " + clubRequestDto.getClubIntro());
+        System.out.println("Service : " + clubRequestDto.getLocation());
+        System.out.println("Service : " + clubRequestDto.getPlan());
+        System.out.println("Service : " + clubRequestDto.getCategory());
+        System.out.println("Service : " + clubRequestDto.getClubIntro());
+
+        Club club = new Club(clubRequestDto, member, s3UploadService, dir);
         clubRepository.save(club);
 
+        System.out.println("Service" + clubRequestDto.getClubName());
         Book book1 = bookRepository.findByIsbn(clubRequestDto.getBook1());
         Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
         Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());
@@ -48,7 +75,7 @@ public class ClubService {
         ClubMember clubMember = new ClubMember(club, member);
         clubMemberRepository.save(clubMember);
 
-        return ResponseDto.success("모임 등록 완료");
+        return ResponseDto.success("등록완료");
     }
 
 

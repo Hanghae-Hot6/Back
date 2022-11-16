@@ -18,25 +18,24 @@ public class Club extends TimeStamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clubId;
-    @Column(nullable = false)
     private String clubName;
     @Column(columnDefinition = "TEXT")
     private String clubIntro;
-    @Column(nullable = false)
+
     private String plan;
-    @Column(nullable = false)
+
     private String location;
-    @Column(nullable = false)
+
     private String schedule;
-    @Column(nullable = false)
+
     private String memberLimit;
-    @Column(nullable = false)
+
     private String category;
     @Column(columnDefinition = "TEXT")
     private String summary;
     private String imageUrl;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID", nullable = false)
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
@@ -46,7 +45,7 @@ public class Club extends TimeStamped{
     private List<ClubBook> clubBookList;
 
 
-    public Club(ClubRequestDto clubRequestDto, Member member, MultipartFile imageUrl, S3UploadService s3UploadService, String dir) throws IOException {
+    public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException {
         this.clubName = clubRequestDto.getClubName();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.plan = clubRequestDto.getPlan();
@@ -55,7 +54,7 @@ public class Club extends TimeStamped{
         this.memberLimit = clubRequestDto.getMemberLimit();
         this.category = clubRequestDto.getCategory();
         this.summary = clubRequestDto.getSummary();
-        this.imageUrl = s3UploadService.upload(imageUrl, dir);
+        this.imageUrl = s3UploadService.upload(clubRequestDto.getImageUrl(), dir);
         this.member = member;
     }
 
