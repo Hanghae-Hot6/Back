@@ -16,12 +16,18 @@ public class ClubBook extends TimeStamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Club club;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    private Book book;
+    private Book book1;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Book book2;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Book book3;
 
-    public ClubBook(Club club, Book book){
+    public ClubBook(Club club, Book book1, Book book2, Book book3){
         this.club = club;
-        this.book = book;
+        this.book1 = book1;
+        this.book2 = book2;
+        this.book3 = book3;
     }
+
 }

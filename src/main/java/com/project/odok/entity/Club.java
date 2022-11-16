@@ -24,6 +24,7 @@ public class Club extends TimeStamped{
     private String clubIntro;
     @Column(nullable = false)
     private String plan;
+    @Column(nullable = false)
     private String location;
     @Column(nullable = false)
     private String schedule;
