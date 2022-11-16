@@ -1,13 +1,12 @@
 package com.project.odok.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.odok.security.exception.requestDto.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -25,6 +24,10 @@ public class Member extends TimeStamped {
     @Column(nullable = false)
     private String password;
 
+    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
+
     public Member(SignupRequestDto signupRequestDto, String password) {
         this.memberId = signupRequestDto.getMemberId();
         this.email = signupRequestDto.getEmail();
@@ -32,6 +35,7 @@ public class Member extends TimeStamped {
         this.address = signupRequestDto.getAddress();
         this.phoneNumber = signupRequestDto.getPhoneNumber();
         this.password = password;
+        this.authority = Authority.ROLE_USER;
     }
 
 }

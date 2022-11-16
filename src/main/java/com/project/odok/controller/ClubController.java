@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
@@ -40,8 +41,6 @@ public class ClubController {
     public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                      @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        System.out.println("Controller"+ clubRequestDto.getBook1());
-        System.out.println("Controller: " + userDetails.getUsername());
         return clubService.createClub(clubRequestDto, userDetails.getMember());
     }
 

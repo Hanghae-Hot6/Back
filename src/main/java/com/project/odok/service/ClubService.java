@@ -53,14 +53,7 @@ public class ClubService {
 
     public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, Member member) throws IOException{
 
-        System.out.println("Service : 서비스 진입");
-        System.out.println("Service : " + clubRequestDto.getClubName());
-        System.out.println("Service : " + clubRequestDto.getClubIntro());
-        System.out.println("Service : " + clubRequestDto.getLocation());
-        System.out.println("Service : " + clubRequestDto.getPlan());
-        System.out.println("Service : " + clubRequestDto.getCategory());
-        System.out.println("Service : " + clubRequestDto.getClubIntro());
-
+        System.out.println(clubRequestDto.getImageUrl());
         Club club = new Club(clubRequestDto, member, s3UploadService, dir);
         clubRepository.save(club);
 
