@@ -3,7 +3,6 @@ package com.project.odok.dto.requestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor
@@ -25,5 +24,11 @@ public class ClubRequestDto {
     private String category;
 
     private String summary;
+
+    private String book1;
+
+    private String book2;
+
+    private String book3;
 
 }

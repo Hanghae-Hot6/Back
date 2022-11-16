@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ClubsInfoResponseDto {
+    private Long clubId;
     private String thumbnail;
     private String clubName;
     private String memberId;
@@ -16,6 +17,7 @@ public class ClubsInfoResponseDto {
 
 
     public ClubsInfoResponseDto(Club club){
+        this.clubId = club.getClubId();
         this.thumbnail = club.getImageUrl();
         this.clubName = club.getClubName();
         this.memberId = club.getMember().getMemberId();

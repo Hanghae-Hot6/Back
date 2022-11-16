@@ -9,13 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/book")
 public class BookController {
-
     private final BookService bookService;
-
-//    @GetMapping("/search/{keyword}")
-//    public String searchBook(@PathVariable String keyword){
-//        return bookService.searchResult(keyword);
-//    }
 
     @GetMapping("/search")
     public ResponseDto<?> searchBook(@RequestParam("keyword") String keyword,

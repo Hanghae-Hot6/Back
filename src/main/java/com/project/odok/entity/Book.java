@@ -10,8 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Book extends TimeStamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookId;
+    private String isbn;
     @Column(nullable = false)
     private String bookName;
 
@@ -22,25 +21,22 @@ public class Book extends TimeStamped {
     private String bookImage;
 
     @Column(nullable = false)
-    private String writer;
+    private String author;
 
-//    @Column(columnDefinition = "LONGTEXT")
-//    private String summary;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Column(nullable = false)
     private String publisher;
 
-    @Column(nullable = false)
-    private String isbn;
 
 
-
-    public Book (String bookName, String link, String image, String author, String publisher, String isbn) {
+    public Book (String bookName, String link, String image, String author, String description,String publisher, String isbn) {
         this.bookName = bookName;
         this.link = link;
         this.bookImage = image;
-        this.writer = author;
-//        this.summary = description;
+        this.author = author;
+        this.description = description;
         this.publisher = publisher;
         this.isbn = isbn;
     }
