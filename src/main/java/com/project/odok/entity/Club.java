@@ -20,7 +20,7 @@ public class Club extends TimeStamped{
     private Long clubId;
     @Column(nullable = false)
     private String clubName;
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String clubIntro;
     @Column(nullable = false)
     private String plan;
@@ -32,7 +32,7 @@ public class Club extends TimeStamped{
     private String memberLimit;
     @Column(nullable = false)
     private String category;
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String summary;
     private String imageUrl;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -10,18 +10,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.http.RequestEntity;
-//import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-//import org.springframework.web.client.RestTemplate;
-//import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.*;
 import java.net.URLEncoder;
-//import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -29,13 +24,11 @@ import java.util.*;
 @Service
 public class BookService {
 
-//    @Value("${clientId}") String clientId;
-//    @Value("${clientSecret}") String clientSecret;
+    @Value("${clientId}") String clientId;
+    @Value("${clientSecret}") String clientSecret;
 
     private final BookRepository bookRepository;
 
-    private final String clientId = null;
-    private final String clientSecret = null;
 
         public ResponseDto<?> searchResult(String keyword, String start, String display){
 
@@ -73,7 +66,7 @@ public class BookService {
                     String description = (String) tmp.get("description");
 
                     if(!bookRepository.existsByIsbn(isbn)){
-                        Book book = new Book(title, link, image, author, publisher, isbn);
+                        Book book = new Book(title, link, image, author, description, publisher, isbn);
                         bookRepository.save(book);
                     }
 
