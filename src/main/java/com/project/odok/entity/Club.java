@@ -4,7 +4,6 @@ import com.project.odok.dto.requestDto.club.ClubRequestDto;
 import com.project.odok.service.S3UploadService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -21,15 +20,10 @@ public class Club extends TimeStamped{
     private String clubName;
     @Column(columnDefinition = "TEXT")
     private String clubIntro;
-
     private String plan;
-
     private String location;
-
     private String schedule;
-
     private String memberLimit;
-
     private String category;
     @Column(columnDefinition = "TEXT")
     private String summary;
@@ -45,7 +39,20 @@ public class Club extends TimeStamped{
     private List<ClubBook> clubBookList;
 
 
-    public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException {
+    public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException{
+        this.clubName = clubRequestDto.getClubName();
+        this.clubIntro = clubRequestDto.getClubIntro();
+        this.plan = clubRequestDto.getPlan();
+        this.location = clubRequestDto.getLocation();
+        this.schedule = clubRequestDto.getSchedule();
+        this.memberLimit = clubRequestDto.getMemberLimit();
+        this.category = clubRequestDto.getCategory();
+        this.summary = clubRequestDto.getSummary();
+        this.imageUrl = clubRequestDto.getImageUrl() != null? s3UploadService.upload(clubRequestDto.getImageUrl(), dir) : null;
+        this.member = member;
+    }
+
+    public void update(ClubRequestDto clubRequestDto, S3UploadService s3UploadService, String dir) throws IOException{
         this.clubName = clubRequestDto.getClubName();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.plan = clubRequestDto.getPlan();
@@ -55,18 +62,5 @@ public class Club extends TimeStamped{
         this.category = clubRequestDto.getCategory();
         this.summary = clubRequestDto.getSummary();
         this.imageUrl = s3UploadService.upload(clubRequestDto.getImageUrl(), dir);
-        this.member = member;
-    }
-
-    public void update(ClubRequestDto clubRequestDto, MultipartFile imageUrl, S3UploadService s3UploadService, String dir) throws IOException{
-        this.clubName = clubRequestDto.getClubName();
-        this.clubIntro = clubRequestDto.getClubIntro();
-        this.plan = clubRequestDto.getPlan();
-        this.location = clubRequestDto.getLocation();
-        this.schedule = clubRequestDto.getSchedule();
-        this.memberLimit = clubRequestDto.getMemberLimit();
-        this.category = clubRequestDto.getCategory();
-        this.summary = clubRequestDto.getSummary();
-        this.imageUrl = s3UploadService.upload(imageUrl, dir);
     }
 }

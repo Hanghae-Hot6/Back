@@ -27,9 +27,10 @@ public class ClubResponseDto {
     private String bookLink1;
     private String bookLink2;
     private String bookLink3;
+    private Boolean subscription;
 
 
-    public ClubResponseDto(Club club, ClubBook clubBook){
+    public ClubResponseDto(Club club, ClubBook clubBook, Boolean subscription){
         this.clubId = club.getClubId();
         this.leader = club.getMember().getMemberId();
         this.clubName = club.getClubName();
@@ -41,15 +42,16 @@ public class ClubResponseDto {
         this.category = club.getCategory();
         this.summary = club.getSummary();
         this.imageUrl = club.getImageUrl();
-        this.bookName1 = clubBook.getBook1().getBookName();
-        this.bookName2 = clubBook.getBook2().getBookName();
-        this.bookName3 = clubBook.getBook3().getBookName();
-        this.bookImage1 = clubBook.getBook1().getBookImage();
-        this.bookImage2 = clubBook.getBook2().getBookImage();
-        this.bookImage3 = clubBook.getBook3().getBookImage();
-        this.bookLink1 = clubBook.getBook1().getLink();
-        this.bookLink2 = clubBook.getBook2().getLink();
-        this.bookLink3 = clubBook.getBook3().getLink();
+        this.subscription = subscription;
+        this.bookName1 = clubBook.getBook1() != null ? clubBook.getBook1().getBookName() : "책을 선택하세요";
+        this.bookName2 = clubBook.getBook2() != null ? clubBook.getBook2().getBookName() : "책을 선택하세요";
+        this.bookName3 = clubBook.getBook3() != null ? clubBook.getBook3().getBookName() : "책을 선택하세요";
+        this.bookImage1 = clubBook.getBook1() != null ? clubBook.getBook1().getBookImage() : "책을 선택하세요";
+        this.bookImage2 = clubBook.getBook2() != null ? clubBook.getBook2().getBookImage() : "책을 선택하세요";
+        this.bookImage3 = clubBook.getBook3() != null ? clubBook.getBook3().getBookImage() : "책을 선택하세요";
+        this.bookLink1 = clubBook.getBook1() != null ? clubBook.getBook1().getLink() : "책을 선택하세요";
+        this.bookLink2 = clubBook.getBook2() != null ? clubBook.getBook2().getLink() : "책을 선택하세요";
+        this.bookLink3 = clubBook.getBook3() != null ? clubBook.getBook3().getLink() : "책을 선택하세요";
     }
 
 }
