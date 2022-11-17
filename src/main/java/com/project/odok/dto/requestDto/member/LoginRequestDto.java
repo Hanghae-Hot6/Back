@@ -1,4 +1,4 @@
-package com.project.odok.security.exception.requestDto;
+package com.project.odok.dto.requestDto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

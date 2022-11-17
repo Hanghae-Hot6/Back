@@ -2,7 +2,7 @@ package com.project.odok.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.odok.security.exception.requestDto.SignupRequestDto;
+import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,8 +1,8 @@
 package com.project.odok.controller;
 
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.security.exception.requestDto.LoginRequestDto;
-import com.project.odok.security.exception.requestDto.SignupRequestDto;
+import com.project.odok.dto.requestDto.member.LoginRequestDto;
+import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

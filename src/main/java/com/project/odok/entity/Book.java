@@ -1,5 +1,6 @@
 package com.project.odok.entity;
 
+import com.project.odok.dto.requestDto.book.BestSellerRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,22 +12,13 @@ import javax.persistence.*;
 public class Book extends TimeStamped {
     @Id
     private String isbn;
-    @Column(nullable = false)
     private String bookName;
-
-    @Column(nullable = false)
     private String link;
-
-    @Column(nullable = false)
     private String bookImage;
-
-    @Column(nullable = false)
     private String author;
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(nullable = false)
     private String publisher;
 
 
@@ -39,5 +31,15 @@ public class Book extends TimeStamped {
         this.description = description;
         this.publisher = publisher;
         this.isbn = isbn;
+    }
+
+    public Book(BestSellerRequestDto book) {
+        this.bookName = book.getBookName();
+        this.link = book.getLink();
+        this.bookImage = book.getBookImage();
+        this.author = book.getAuthor();
+        this.description = book.getDescription();
+        this.publisher = book.getPublisher();
+        this.isbn = book.getIsbn();
     }
 }

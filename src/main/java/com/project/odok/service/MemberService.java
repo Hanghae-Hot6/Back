@@ -2,8 +2,8 @@ package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.TokenDto;
-import com.project.odok.security.exception.requestDto.LoginRequestDto;
-import com.project.odok.security.exception.requestDto.SignupRequestDto;
+import com.project.odok.dto.requestDto.member.LoginRequestDto;
+import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.entity.Member;
 import com.project.odok.entity.RefreshToken;
 import com.project.odok.repository.MemberRepository;
@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
 @Service

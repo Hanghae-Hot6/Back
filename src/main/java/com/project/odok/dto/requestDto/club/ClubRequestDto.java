@@ -1,4 +1,4 @@
-package com.project.odok.dto.requestDto;
+package com.project.odok.dto.requestDto.club;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
