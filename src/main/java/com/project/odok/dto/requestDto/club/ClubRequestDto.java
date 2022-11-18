@@ -14,26 +14,29 @@ public class ClubRequestDto {
 
     private String clubName;
 
-    private String clubIntro;
+    private String category;
 
-    private String plan;
+    private MultipartFile thumbnail;
+
+    private String memberMinNum;
+    private String memberMaxNum;
+
+    private String startDate;
+    private String finishDate;
 
     private String location;
 
     private String schedule;
 
-    private String memberLimit;
+    private String clubIntro;
 
-    private String category;
-
-    private String summary;
-
-    private MultipartFile imageUrl;
+    private String clubSummary;
 
     private String book1;
-
     private String book2;
-
     private String book3;
 
+    private String bookIntro;
+
+    private String bookSummary;
 }

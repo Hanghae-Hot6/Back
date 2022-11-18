@@ -12,7 +12,6 @@ import com.project.odok.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -33,25 +32,7 @@ public class ClubService {
 
 
     // 모임 등록
-//    public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, MultipartFile imageUrl, Member member) throws IOException {
-//
-//        Club club = new Club(clubRequestDto, member);
-//        clubRepository.save(club);
-//
-//        Book book1 = bookRepository.findByIsbn(clubRequestDto.getBook1());
-//        Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
-//        Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());
-//
-//        ClubBook clubBook = new ClubBook(club, book1, book2, book3);
-//        clubBookReqository.save(clubBook);
-//
-//        ClubMember clubMember = new ClubMember(club, member);
-//        clubMemberRepository.save(clubMember);
-//
-//        return ResponseDto.success("모임 등록 완료");
-//    }
-
-    public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, Member member) throws IOException{
+    public ResponseDto<?> createClub(Member member, ClubRequestDto clubRequestDto) throws IOException {
 
         Club club = new Club(clubRequestDto, member, s3UploadService, dir);
         clubRepository.save(club);
@@ -60,13 +41,13 @@ public class ClubService {
         Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
         Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());
 
-        ClubBook clubBook = new ClubBook(club, book1, book2, book3);
+        ClubBook clubBook = new ClubBook(club, book1, book2, book3, clubRequestDto);
         clubBookReqository.save(clubBook);
 
         ClubMember clubMember = new ClubMember(club, member);
         clubMemberRepository.save(clubMember);
 
-        return ResponseDto.success("등록완료");
+        return ResponseDto.success("모임 등록 완료");
     }
 
 
@@ -85,26 +66,29 @@ public class ClubService {
 
 
     // 모임 상세 조회
-    public ResponseDto<?> getClub(Long clubId) {
+    public ResponseDto<?> getClub(Long clubId, Member member) {
 
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
 
         ClubBook clubBook = clubBookReqository.findByClub(club);
 
-        return ResponseDto.success(new ClubResponseDto(club, clubBook));
+        if (!clubMemberRepository.existsByMemberAndClub(member, club))
+            return ResponseDto.success(new ClubResponseDto(club,clubBook,false));
+
+        return ResponseDto.success(new ClubResponseDto(club, clubBook,true));
     }
 
 
     // 모임 수정
     @Transactional
-    public ResponseDto<?> updateClub(Long clubId, Member member, ClubRequestDto clubRequestDto, MultipartFile imageUrl) throws IOException {
+    public ResponseDto<?> updateClub(Long clubId, Member member, ClubRequestDto clubRequestDto) throws IOException {
 
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
 
         if (validateMember(member, club))
-            throw new IllegalArgumentException("모임의 리더와 현재 사용자가 일치하지 않습니다.");
+            throw new IllegalArgumentException("모임의 생성자와 현재 사용자가 일치하지 않습니다.");
 
-        club.update(clubRequestDto, imageUrl, s3UploadService, dir);
+        club.update(clubRequestDto, s3UploadService, dir);
 
         return ResponseDto.success("모임정보 수정 완료");
     }
@@ -117,13 +101,28 @@ public class ClubService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
 
         if (validateMember(member, club))
-            throw new IllegalArgumentException("모임의 리더와 현재 사용자가 일치하지 않습니다.");
+            throw new IllegalArgumentException("모임의 생성자와 현재 사용자가 일치하지 않습니다.");
 
         clubRepository.delete(club);
 
         return ResponseDto.success("모임 삭제 완료");
     }
 
+
+    // 모임 가입하기
+    public ResponseDto<?> joinClub(Long clubId, Member member) {
+
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
+
+        ClubMember clubMember = new ClubMember(club, member);
+
+        if (!clubMemberRepository.existsByMemberAndClub(member, club)){
+            clubMemberRepository.save(clubMember);
+            return ResponseDto.success("모임 가입 완료");
+        }
+
+        return ResponseDto.success("이미 가입된 유저입니다.");
+    }
 
     public boolean validateMember(Member member, Club club) {
         return !member.getMemberId().equals(club.getMember().getMemberId());

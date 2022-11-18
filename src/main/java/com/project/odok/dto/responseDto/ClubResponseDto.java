@@ -8,16 +8,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ClubResponseDto {
     private Long clubId;
-    private String leader;
+    private String thumbnail;
     private String clubName;
-    private String clubIntro;
-    private String plan;
-    private String location;
-    private String schedule;
-    private String memberLimit;
     private String category;
-    private String summary;
-    private String imageUrl;
+    private String location;
+    private String period;
+    private String leader;
+    private String participantNum;
+    private Boolean subscription;
+    private Boolean interest;
+    private String clubIntro;
+    private String clubSummary;
+    private String bookIntro;
     private String bookImage1;
     private String bookImage2;
     private String bookImage3;
@@ -27,22 +29,24 @@ public class ClubResponseDto {
     private String bookLink1;
     private String bookLink2;
     private String bookLink3;
-    private Boolean subscription;
+    private String bookSummary;
+    private String schedule;
 
 
     public ClubResponseDto(Club club, ClubBook clubBook, Boolean subscription){
         this.clubId = club.getClubId();
-        this.leader = club.getMember().getMemberId();
+        this.thumbnail = club.getThumbnail();
         this.clubName = club.getClubName();
-        this.clubIntro = club.getClubIntro();
-        this.plan = club.getPlan();
-        this.location = club.getLocation();
-        this.schedule = club.getSchedule();
-        this.memberLimit = club.getMemberLimit();
         this.category = club.getCategory();
-        this.summary = club.getSummary();
-        this.imageUrl = club.getImageUrl();
+        this.location = club.getLocation();
+        this.period = club.getStartDate() + " ~ " + club.getFinishDate();
+        this.leader = club.getMember().getMemberId();
+        this.participantNum = club.getMemberMaxNum(); // 쿼리문 작성해야됨.
         this.subscription = subscription;
+//        this.interest = interest;
+        this.clubIntro = club.getClubIntro();
+        this.clubSummary = club.getClubSummary();
+        this.bookIntro = clubBook.getBookIntro();
         this.bookName1 = clubBook.getBook1() != null ? clubBook.getBook1().getBookName() : "책을 선택하세요";
         this.bookName2 = clubBook.getBook2() != null ? clubBook.getBook2().getBookName() : "책을 선택하세요";
         this.bookName3 = clubBook.getBook3() != null ? clubBook.getBook3().getBookName() : "책을 선택하세요";
@@ -52,6 +56,8 @@ public class ClubResponseDto {
         this.bookLink1 = clubBook.getBook1() != null ? clubBook.getBook1().getLink() : "책을 선택하세요";
         this.bookLink2 = clubBook.getBook2() != null ? clubBook.getBook2().getLink() : "책을 선택하세요";
         this.bookLink3 = clubBook.getBook3() != null ? clubBook.getBook3().getLink() : "책을 선택하세요";
+        this.bookSummary = clubBook.getBookSummary();
+        this.schedule = club.getSchedule();
     }
 
 }
