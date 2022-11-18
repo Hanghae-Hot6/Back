@@ -1,7 +1,7 @@
 package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.dto.requestDto.ClubRequestDto;
+import com.project.odok.dto.requestDto.club.ClubRequestDto;
 import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.*;
@@ -53,11 +53,9 @@ public class ClubService {
 
     public ResponseDto<?> createClub(ClubRequestDto clubRequestDto, Member member) throws IOException{
 
-        System.out.println(clubRequestDto.getImageUrl());
         Club club = new Club(clubRequestDto, member, s3UploadService, dir);
         clubRepository.save(club);
 
-        System.out.println("Service" + clubRequestDto.getClubName());
         Book book1 = bookRepository.findByIsbn(clubRequestDto.getBook1());
         Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
         Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());

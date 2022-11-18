@@ -1,8 +1,9 @@
 package com.project.odok.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.security.exception.requestDto.LoginRequestDto;
-import com.project.odok.security.exception.requestDto.SignupRequestDto;
+import com.project.odok.dto.requestDto.member.LoginRequestDto;
+import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,9 @@ public class MemberController {
         return memberService.login(loginRequestDto, httpServletResponse);
     }
 
-
+    @GetMapping("/kakao")
+    @Operation(summary = "Kakao Login", description = "카카오 로그인")
+    public ResponseDto<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        return memberService.kakaoLogin(code, response);
+    }
 }

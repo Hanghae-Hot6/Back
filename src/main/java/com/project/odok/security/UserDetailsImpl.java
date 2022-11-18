@@ -43,7 +43,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        System.out.println("여기까진 왔음");
         return member.getMemberId();
     }
 

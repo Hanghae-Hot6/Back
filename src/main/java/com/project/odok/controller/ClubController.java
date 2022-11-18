@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.dto.requestDto.ClubRequestDto;
+import com.project.odok.dto.requestDto.club.ClubRequestDto;
 import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.service.ClubService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
@@ -22,21 +21,6 @@ public class ClubController {
 
     private final ClubService clubService;
 
-
-    // 모임 등록
-//    @PostMapping
-//    public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
-//                                     @RequestPart(value = "imageUrl", required = false)MultipartFile imageUrl,
-//                                     @RequestParam("formData2") String dataList) throws IOException {
-//
-//        ObjectMapper objectMapper = new ObjectMapper().registerModule(new SimpleModule());
-//        ClubRequestDto clubRequestDto = objectMapper.readValue(dataList, new TypeReference<>(){});
-//
-//        System.out.println(clubRequestDto.getBook1());
-//        System.out.println(clubRequestDto.getClubIntro());
-//
-//        return clubService.createClub(clubRequestDto, imageUrl, userDetails.getMember());
-//    }
     @PostMapping
     public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                      @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
