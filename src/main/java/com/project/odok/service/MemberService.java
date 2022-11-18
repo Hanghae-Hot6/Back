@@ -29,12 +29,10 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    private final EntityManager entityManager;
     private final RefreshTokenRepository refreshTokenRepository;
 
     public ResponseDto<?> signUp(SignupRequestDto signupRequestDto) {
         Member member = new Member(signupRequestDto, passwordEncoder.encode(signupRequestDto.getPassword()));
-//        entityManager.persist(member);
         memberRepository.save(member);
         return ResponseDto.success("회원가입 되었습니다.");
     }
@@ -56,7 +54,7 @@ public class MemberService {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword()))
             throw new RuntimeException("패스워드가 일치하지 않습니다.");
 
-        TokenDto tokenDto = tokenProvider.generateToken(authentication);
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(authentication.getName())
