@@ -1,7 +1,7 @@
 package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.dto.requestDto.ClubRequestDto;
+import com.project.odok.dto.responseDto.requestDto.ClubRequestDto;
 import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.*;

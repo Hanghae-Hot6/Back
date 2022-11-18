@@ -1,6 +1,6 @@
 package com.project.odok.entity;
 
-import com.project.odok.dto.requestDto.ClubRequestDto;
+import com.project.odok.dto.responseDto.requestDto.ClubRequestDto;
 import com.project.odok.service.S3UploadService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

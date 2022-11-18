@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.dto.requestDto.ClubRequestDto;
+import com.project.odok.dto.responseDto.requestDto.ClubRequestDto;
 import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.service.ClubService;
 import lombok.RequiredArgsConstructor;
