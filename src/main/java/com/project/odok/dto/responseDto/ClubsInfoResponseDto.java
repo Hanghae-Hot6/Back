@@ -18,11 +18,11 @@ public class ClubsInfoResponseDto {
 
     public ClubsInfoResponseDto(Club club){
         this.clubId = club.getClubId();
-        this.thumbnail = club.getImageUrl();
+        this.thumbnail = club.getThumbnail();
         this.clubName = club.getClubName();
         this.memberId = club.getMember().getMemberId();
         this.category = club.getCategory();
-        this.summary = club.getSummary();
-        this.memberLimit = club.getMemberLimit();
+        this.summary = club.getClubSummary();
+        this.memberLimit = club.getMemberMaxNum();
     }
 }
