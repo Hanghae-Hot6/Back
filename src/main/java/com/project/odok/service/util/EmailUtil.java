@@ -1,4 +1,4 @@
-package com.project.odok.service;
+package com.project.odok.service.util;
 
 import java.util.Random;
 

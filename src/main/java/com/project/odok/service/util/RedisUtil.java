@@ -1,4 +1,4 @@
-package com.project.odok.service;
+package com.project.odok.service.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

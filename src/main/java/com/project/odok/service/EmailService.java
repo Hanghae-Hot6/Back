@@ -4,6 +4,7 @@ import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.requestDto.member.FindIdRequestDto;
 import com.project.odok.entity.Member;
 import com.project.odok.repository.MemberRepository;
+import com.project.odok.service.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 
-import static com.project.odok.service.EmailUtil.createKey;
+import static com.project.odok.service.util.EmailUtil.createKey;
 
 @Slf4j
 @Service

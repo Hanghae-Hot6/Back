@@ -9,14 +9,12 @@ import com.project.odok.dto.requestDto.member.KakaoUserInfoDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.entity.Member;
-import com.project.odok.entity.RefreshToken;
 import com.project.odok.repository.MemberRepository;
-import com.project.odok.repository.RefreshTokenRepository;
 import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.security.jwt.JwtFilter;
 import com.project.odok.security.jwt.TokenProvider;
+import com.project.odok.service.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,7 +41,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisUtil redisUtil;
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
 
     public ResponseDto<?> signUp(SignupRequestDto signupRequestDto) {
         if (memberRepository.existsByMemberId(signupRequestDto.getMemberId()))
@@ -91,12 +90,7 @@ public class MemberService {
 
     private void createToken(HttpServletResponse response, Authentication authentication) {
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
-
-        refreshTokenRepository.save(refreshToken);
+        redisUtil.setDataExpire(authentication.getName(), tokenDto.getRefreshToken(), REFRESH_TOKEN_EXPIRE_TIME);
         response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtFilter.BEARER_PREFIX + tokenDto.getAccessToken());
         response.setHeader("Refresh-Token", tokenDto.getRefreshToken());
     }
