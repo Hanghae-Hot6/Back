@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -79,6 +80,27 @@ public class TokenProvider {
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find " + memberId));
         UserDetailsImpl userDetails = new UserDetailsImpl(member);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    // Security 에서 인증 유저 정보 가져오기
+    public String getMemberUsernameInToken(String accessTokenTemp) {
+
+        if(!StringUtils.hasText(accessTokenTemp) && accessTokenTemp.startsWith(BEARER_TYPE)) {
+            throw new RuntimeException("토큰에 아무것두 없어유");
+        }
+        String accessToken =  accessTokenTemp.substring(7);
+
+        Claims claims = parseClaims(accessToken);
+
+        if (claims.get(AUTHORITIES_KEY) == null) {
+            throw new RuntimeException("권한 정보가 없는 토큰입니다");
+        }
+
+        String username = claims.getSubject();
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + "라는 유저가 없습니다"));
+
+        return member.getUsername();
     }
 
     public boolean validateToken(String token) {
