@@ -34,12 +34,13 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String id;
 
-    public MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage createMessage(String email) throws MessagingException, UnsupportedEncodingException {
+
         auth = createKey();
         log.info("인증 번호 : " + auth);
         MimeMessage message = javaMailSender.createMimeMessage();
 
-        message.addRecipients(MimeMessage.RecipientType.TO, to); // to 보내는 대상
+        message.addRecipients(MimeMessage.RecipientType.TO, email); // to 보내는 대상
         message.setSubject("Odok 회원가입 인증 코드: "); //메일 제목
 
         // 메일 내용 메일의 subtype을 html로 지정하여 html문법 사용 가능
@@ -56,24 +57,24 @@ public class EmailService {
     }
 
     public MimeMessage findId(FindIdRequestDto findIdRequestDto) throws MessagingException, UnsupportedEncodingException {
-        auth = findIdRequestDto.getEmail();
-        Member member = memberRepository.findByEmail(auth).orElseThrow(
+        String email = findIdRequestDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException("등록되지 않은 email입니다.")
         );
 
-        if (!(member.getEmail().equals(auth) && member.getUsername().equals(findIdRequestDto.getUsername()))) {
+        if (!(member.getEmail().equals(email) && member.getUsername().equals(findIdRequestDto.getUsername()))) {
             new IllegalArgumentException("유저 정보가 틀립니다.");
         }
-        auth = member.getEmail();
-        log.info("인증 이메일 : " + auth);
+        auth = member.getMemberId();
+        log.info("찾는 ID : " + auth);
         MimeMessage message = javaMailSender.createMimeMessage();
 
-        message.addRecipients(MimeMessage.RecipientType.TO, auth); // to 보내는 대상
+        message.addRecipients(MimeMessage.RecipientType.TO, email); // to 보내는 대상
         message.setSubject("Odok 이메일 인증 코드: "); //메일 제목
 
         // 메일 내용 메일의 subtype을 html로 지정하여 html문법 사용 가능
         String msg = "";
-        msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">이메일 주소 확인</h1>";
+        msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">ID 확인</h1>";
         msg += "<div style=\"padding-right: 30px; padding-left: 30px; margin: 32px 0 40px;\"><table style=\"border-collapse: collapse; border: 0; background-color: #F4F4F4; height: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px;\"><tbody><tr><td style=\"text-align: center; vertical-align: middle; font-size: 30px;\">";
         msg += auth;
         msg += "</td></tr></tbody></table></div>";
@@ -90,10 +91,13 @@ public class EmailService {
         MimeMessage 객체 안에 내가 전송할 메일의 내용을 담아준다.
         bean으로 등록해둔 javaMailSender 객체를 사용하여 이메일 send
      */
-    public ResponseDto<?> sendSimpleMessage(String to)throws Exception {
-        MimeMessage message = createMessage(to);
+    public ResponseDto<?> sendSimpleMessage(String email)throws Exception {
+        if (memberRepository.existsByEmail(email)) {
+            return ResponseDto.fail("이미 존재하는 email입니다.");
+        }
+        MimeMessage message = createMessage(email);
         try{
-            redisUtil.setDataExpire(auth, to, 60 * 5L); // 유효시간 5분
+            redisUtil.setDataExpire(auth, email, 60 * 5L); // 유효시간 5분
             javaMailSender.send(message); // 메일 발송
         }catch(MailException es){
             es.printStackTrace();
@@ -106,14 +110,13 @@ public class EmailService {
     public ResponseDto<?> sendEmailMessage(FindIdRequestDto findIdRequestDto)throws Exception {
         MimeMessage message = findId(findIdRequestDto);
         try{
-            redisUtil.setDataExpire(auth, id, 60 * 5L); // 유효시간 5분
             javaMailSender.send(message); // 메일 발송
         }catch(MailException es){
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
         log.info("찾는 이메일 : " + auth);
-        return ResponseDto.success(auth); // 메일로 보냈던 인증 코드를 서버로 리턴
+        return ResponseDto.success("이메일을 메일로 보냈습니다."); // 메일로 보냈던 인증 코드를 서버로 리턴
     }
 
     public ResponseDto<?> verifyEmail(String key) {

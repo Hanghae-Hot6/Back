@@ -46,6 +46,8 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public ResponseDto<?> signUp(SignupRequestDto signupRequestDto) {
+        if (memberRepository.existsByMemberId(signupRequestDto.getMemberId()))
+            return ResponseDto.fail("이미 가입된 유저입니다.");
         Member member = new Member(signupRequestDto, passwordEncoder.encode(signupRequestDto.getPassword()));
         memberRepository.save(member);
         return ResponseDto.success("회원가입 되었습니다.");
