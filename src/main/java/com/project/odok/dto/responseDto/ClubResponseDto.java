@@ -33,7 +33,7 @@ public class ClubResponseDto {
     private String schedule;
 
 
-    public ClubResponseDto(Club club, ClubBook clubBook, Boolean subscription){
+    public ClubResponseDto(Club club, ClubBook clubBook, Boolean subscription, Boolean interest){
         this.clubId = club.getClubId();
         this.thumbnail = club.getThumbnail();
         this.clubName = club.getClubName();
@@ -43,7 +43,7 @@ public class ClubResponseDto {
         this.leader = club.getMember().getMemberId();
         this.participantNum = club.getMemberMaxNum(); // 쿼리문 작성해야됨.
         this.subscription = subscription;
-//        this.interest = interest;
+        this.interest = interest;
         this.clubIntro = club.getClubIntro();
         this.clubSummary = club.getClubSummary();
         this.bookIntro = clubBook.getBookIntro();

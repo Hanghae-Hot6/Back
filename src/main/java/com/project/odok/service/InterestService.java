@@ -27,12 +27,12 @@ public class InterestService {
             Interest interest = new Interest(member,club);
             interestRepository.save(interest);
 
-            return ResponseDto.success("관심 모임 완료");
+            return ResponseDto.success("관심 모임 등록");
         }
 
         Interest interest = interestRepository.findByMemberAndClub(member,club);
         interestRepository.delete(interest);
 
-        return ResponseDto.success("관심 모임 취소");
+        return ResponseDto.success("관심 등록 취소");
     }
 }

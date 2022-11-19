@@ -61,10 +61,20 @@ public class ClubController {
 
 
     // 모임 가입
-    @PostMapping(value = "{club-id}")
+    @PostMapping(value = "/{club-id}/join")
     public ResponseDto<?> joinClub(@PathVariable(name = "club-id") Long clubId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         return clubService.joinClub(clubId, userDetails.getMember());
     }
+
+
+    // 모임 탈퇴
+    @DeleteMapping(value = "/{club-id}/withdraw")
+    public ResponseDto<?> withdrawClub(@PathVariable(name = "club-id") Long clubId,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return clubService.withdrawClub(clubId, userDetails.getMember());
+    }
+
 }

@@ -30,6 +30,7 @@ public class Club extends TimeStamped{
     private String clubIntro;
     @Column(columnDefinition = "TEXT")
     private String clubSummary;
+    private long visitNum = 0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -68,5 +69,9 @@ public class Club extends TimeStamped{
         this.schedule = clubRequestDto.getSchedule();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.clubSummary = clubRequestDto.getClubSummary();
+    }
+
+    public void updateVisitCount(){
+        this.visitNum += 1;
     }
 }
