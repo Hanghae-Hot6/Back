@@ -2,21 +2,29 @@ package com.project.odok.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.odok.dto.ResponseDto;
+import com.project.odok.dto.requestDto.member.FindIdRequestDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
+import com.project.odok.service.EmailService;
 import com.project.odok.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
+    private final EmailService emailService;
 
     @PostMapping("/signup")
     @Operation(summary = "Sign Up", description = "회원가입")
@@ -40,5 +48,20 @@ public class MemberController {
     @Operation(summary = "Kakao Login", description = "카카오 로그인")
     public ResponseDto<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return memberService.kakaoLogin(code, response);
+    }
+
+    @GetMapping("/mailConfirm")
+    public ResponseDto<?> mailConfirm(@RequestParam String email) throws Exception {
+        return emailService.sendSimpleMessage(email);
+    }
+
+    @GetMapping("/mailAuth")
+    public ResponseDto<?> mailAuth(@RequestParam String code) {
+        return emailService.verifyEmail(code);
+    }
+
+    @PostMapping("findId")
+    public ResponseDto<?> findId(@RequestBody FindIdRequestDto requestDto) throws Exception {
+        return emailService.sendEmailMessage(requestDto);
     }
 }
