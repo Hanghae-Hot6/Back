@@ -1,5 +1,6 @@
-package com.project.odok.security.exception.requestDto;
+package com.project.odok.dto.requestDto.member;
 
+import com.project.odok.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,10 @@ public class LoginRequestDto {
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(memberId, password);
+    }
+
+    public LoginRequestDto(Member member) {
+        this.memberId = member.getMemberId();
+        this.password = member.getPassword();
     }
 }

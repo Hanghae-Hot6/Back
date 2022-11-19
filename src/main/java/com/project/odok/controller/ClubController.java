@@ -1,16 +1,12 @@
 package com.project.odok.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.dto.responseDto.requestDto.ClubRequestDto;
+import com.project.odok.dto.requestDto.club.ClubRequestDto;
 import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.service.ClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -21,17 +17,11 @@ public class ClubController {
 
     private final ClubService clubService;
 
-
-    // 모임 등록
     @PostMapping
     public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                     @RequestPart(value = "imageUrl", required = false)MultipartFile imageUrl,
-                                     @RequestParam("data") String dataList) throws IOException {
+                                     @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new SimpleModule());
-        ClubRequestDto clubRequestDto = objectMapper.readValue(dataList, new TypeReference<>(){});
-
-        return clubService.createClub(clubRequestDto, imageUrl, userDetails.getMember());
+        return clubService.createClub(userDetails.getMember(), clubRequestDto);
     }
 
 
@@ -44,8 +34,10 @@ public class ClubController {
 
     // 모임 상세 조회
     @GetMapping(value = "/{club-id}")
-    public ResponseDto<?> getClub(@PathVariable(name = "club-id") Long clubId){
-        return clubService.getClub(clubId);
+    public ResponseDto<?> getClub(@PathVariable(name = "club-id") Long clubId,
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return clubService.getClub(clubId, userDetails.getMember());
     }
 
 
@@ -53,19 +45,26 @@ public class ClubController {
     @PutMapping(value = "/{club-id}")
     public ResponseDto<?> updateClub(@PathVariable(name = "club-id") Long clubId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                     @RequestPart(value = "imageUrl", required = false)MultipartFile imageUrl,
-                                     @RequestParam("data") String dataList) throws IOException{
+                                     @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new SimpleModule());
-        ClubRequestDto clubRequestDto = objectMapper.readValue(dataList, new TypeReference<>(){});
-
-        return clubService.updateClub(clubId, userDetails.getMember(), clubRequestDto, imageUrl);
+        return clubService.updateClub(clubId, userDetails.getMember(), clubRequestDto);
     }
 
 
     // 모임 삭제
     @DeleteMapping(value = "/{club-id}")
-    public ResponseDto<?> deleteClub(@PathVariable(name = "club-id") Long clubId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseDto<?> deleteClub(@PathVariable(name = "club-id") Long clubId,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
+
         return clubService.deleteClub(clubId, userDetails.getMember());
+    }
+
+
+    // 모임 가입
+    @PostMapping(value = "{club-id}")
+    public ResponseDto<?> joinClub(@PathVariable(name = "club-id") Long clubId,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return clubService.joinClub(clubId, userDetails.getMember());
     }
 }

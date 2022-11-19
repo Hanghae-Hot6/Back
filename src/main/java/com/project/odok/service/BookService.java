@@ -1,7 +1,10 @@
 package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
+import com.project.odok.dto.requestDto.book.BookRequestDto;
+import com.project.odok.entity.BestSeller;
 import com.project.odok.entity.Book;
+import com.project.odok.repository.BestSellerRepository;
 import com.project.odok.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +31,7 @@ public class BookService {
     @Value("${clientSecret}") String clientSecret;
 
     private final BookRepository bookRepository;
+    private final BestSellerRepository bestSellerRepository;
 
 
         public ResponseDto<?> searchResult(String keyword, String start, String display){
@@ -137,5 +141,32 @@ public class BookService {
         } catch (IOException e) {
             throw new RuntimeException("API 응답을 읽는 데 실패했습니다.", e);
         }
+    }
+
+    public ResponseDto<?> crawlBestSeller(List<BookRequestDto> bookRequestDto) {
+
+        for (BookRequestDto book : bookRequestDto) {
+            if (bookRepository.existsByIsbn(book.getIsbn())) {
+                Book selectedBook = bookRepository.findByIsbn(book.getIsbn());
+                BestSeller bestSeller = new BestSeller(selectedBook);
+                bestSellerRepository.save(bestSeller);
+            } else {
+                Book selectedBook = new Book(book);
+                bookRepository.save(selectedBook);
+                BestSeller bestSeller = new BestSeller(selectedBook);
+                bestSellerRepository.save(bestSeller);
+            }
+        }
+        return ResponseDto.success("BestSeller 등록 완료");
+    }
+
+    public ResponseDto<?> crawlBooks(List<BookRequestDto> bookRequestDto) {
+        for (BookRequestDto book : bookRequestDto) {
+            if (!bookRepository.existsByIsbn(book.getIsbn())) {
+                Book selectedBook = new Book(book);
+                bookRepository.save(selectedBook);
+            }
+        }
+        return ResponseDto.success("Book 등록 완료");
     }
 }

@@ -22,8 +22,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.apache.kafka:kafka-streams'
-    implementation 'org.springframework.kafka:spring-kafka'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
@@ -32,12 +33,6 @@ dependencies {
 
     // S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
-    // ElasticSearch
-    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-
-    // Kafka
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
