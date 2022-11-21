@@ -58,6 +58,12 @@ public class WebSecurityConfig {
                 .antMatchers("/**").permitAll()
                 .anyRequest().permitAll()
 
+                .and()
+                .oauth2Login()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login")
+
                 .and().apply(new JwtSecurityConfig(tokenProvider));
 
         return http.build();

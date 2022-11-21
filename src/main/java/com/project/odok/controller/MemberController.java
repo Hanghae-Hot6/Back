@@ -6,6 +6,7 @@ import com.project.odok.dto.requestDto.member.FindIdRequestDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.service.EmailService;
+import com.project.odok.service.auth.KakaoService;
 import com.project.odok.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MemberController {
 
     private final MemberService memberService;
+    private final KakaoService kakaoService;
     private final EmailService emailService;
 
     @PostMapping("/signup")
@@ -44,7 +46,7 @@ public class MemberController {
     @GetMapping("/kakao")
     @Operation(summary = "Kakao Login", description = "카카오 로그인")
     public ResponseDto<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        return memberService.kakaoLogin(code, response);
+        return kakaoService.kakaoLogin(code, response);
     }
 
     @GetMapping("/mailConfirm")
@@ -62,3 +64,4 @@ public class MemberController {
         return emailService.sendEmailMessage(requestDto);
     }
 }
+
