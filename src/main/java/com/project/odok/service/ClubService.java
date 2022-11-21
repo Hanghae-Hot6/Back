@@ -30,6 +30,8 @@ public class ClubService {
     private final S3UploadService s3UploadService;
     private final InterestRepository interestRepository;
 
+    private final ChatRoomService chatRoomService;
+
 
     // 모임 등록
     public ResponseDto<?> createClub(Member member, ClubRequestDto clubRequestDto) throws IOException {
@@ -46,6 +48,8 @@ public class ClubService {
 
         ClubMember clubMember = new ClubMember(club, member);
         clubMemberRepository.save(clubMember);
+
+        chatRoomService.createdMemberChatRoom(member, club);
 
         return ResponseDto.success("모임 등록 완료");
     }
@@ -133,6 +137,8 @@ public class ClubService {
             clubMemberRepository.save(clubMember);
             return ResponseDto.success("모임 가입 완료");
         }
+
+        chatRoomService.addMemberChatRoom(member, club);
 
         return ResponseDto.success("이미 가입된 유저입니다.");
     }
