@@ -32,6 +32,13 @@ public class ClubController {
     }
 
 
+    // Top5 인기 모임 조회
+    @GetMapping(value = "/top5")
+    public ResponseDto<?> getTop5Clubs(){
+        return clubService.getTop5Clubs();
+    }
+
+
     // 모임 상세 조회
     @GetMapping(value = "/{club-id}")
     public ResponseDto<?> getClub(@PathVariable(name = "club-id") Long clubId,

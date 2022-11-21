@@ -40,7 +40,7 @@ public class ClubResponseDto {
         this.category = club.getCategory();
         this.location = club.getLocation();
         this.period = club.getStartDate() + " ~ " + club.getFinishDate();
-        this.leader = club.getMember().getMemberId();
+        this.leader = club.getLeader().getMemberId();
         this.participantNum = memberNum+"/"+club.getMemberMaxNum(); // 쿼리문 작성해야됨.
         this.subscription = subscription;
         this.interest = interest;
