@@ -6,12 +6,14 @@ import com.project.odok.dto.requestDto.member.FindIdRequestDto;
 import com.project.odok.dto.requestDto.member.FindPasswordRequestDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
+import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.service.EmailService;
 import com.project.odok.service.auth.KakaoService;
 import com.project.odok.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +50,18 @@ public class MemberController {
     @Operation(summary = "Kakao Login", description = "카카오 로그인")
     public ResponseDto<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoService.kakaoLogin(code, response);
+    }
+
+    @GetMapping("/mypage")
+    @Operation(summary = "My Page", description = "마이페이지")
+    public ResponseDto<?> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.myPage(userDetails);
+    }
+
+    @GetMapping("/mypage/leader")
+    @Operation(summary = "내가 만든 모임", description = "내가 만든 모임 리스트")
+    public ResponseDto<?> myPageMadeByMe(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.myPageMadeByMe(userDetails);
     }
 
     @GetMapping("/mailConfirm")

@@ -23,6 +23,5 @@ public class ClubMember extends TimeStamped {
     public ClubMember(Club club, Member member){
         this.club = club;
         this.member = member;
-
     }
 }

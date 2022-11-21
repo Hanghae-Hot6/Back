@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,6 +30,12 @@ public class Member extends TimeStamped {
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ClubMember> joinClub;
+
+    @OneToMany(mappedBy = "leader", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Club> madeClub;
 
     public Member(SignupRequestDto signupRequestDto, String password) {
         this.memberId = signupRequestDto.getMemberId();

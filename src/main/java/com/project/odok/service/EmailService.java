@@ -93,6 +93,7 @@ public class EmailService {
         auth = createKey();
         log.info("임시 비밀번호 : " + auth);
         member.updatePassword(member, passwordEncoder.encode(auth));
+        memberRepository.save(member);
         MimeMessage message = javaMailSender.createMimeMessage();
 
         message.addRecipients(MimeMessage.RecipientType.TO, email); // to 보내는 대상
@@ -149,9 +150,13 @@ public class EmailService {
         Member member = memberRepository.findById(findPasswordRequestDto.getId()).orElseThrow(
                 () -> new UsernameNotFoundException("등록되지 않은 ID 입니다.")
         );
-        MimeMessage message = findPassword(member, member.getEmail());
         try{
-            javaMailSender.send(message); // 메일 발송
+            if (findPasswordRequestDto.getEmail().equals(member.getEmail())) {
+                MimeMessage message = findPassword(member, member.getEmail());
+                javaMailSender.send(message); // 메일 발송
+            } else {
+                ResponseDto.fail("이메일이 일치하지 않습니다.");
+            }
         }catch(MailException es){
             es.printStackTrace();
             throw new IllegalArgumentException();

@@ -1,5 +1,6 @@
 package com.project.odok.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.odok.dto.requestDto.club.ClubRequestDto;
 import com.project.odok.service.S3UploadService;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class Club extends TimeStamped{
     private long visitNum = 0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
+    @JsonIgnore
     private Member leader;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)

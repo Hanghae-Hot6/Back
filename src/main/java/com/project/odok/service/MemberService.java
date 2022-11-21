@@ -4,8 +4,15 @@ import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.TokenDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
+import com.project.odok.dto.responseDto.MyPageClubResponseDto;
+import com.project.odok.dto.responseDto.MyPageResponseDto;
+import com.project.odok.entity.Club;
+import com.project.odok.entity.ClubMember;
 import com.project.odok.entity.Member;
+import com.project.odok.repository.ClubMemberRepository;
+import com.project.odok.repository.ClubRepository;
 import com.project.odok.repository.MemberRepository;
+import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.security.jwt.JwtFilter;
 import com.project.odok.security.jwt.TokenProvider;
 import com.project.odok.service.util.RedisUtil;
@@ -18,12 +25,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final ClubRepository clubRepository;
+    private final ClubMemberRepository clubMemberRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -60,6 +71,23 @@ public class MemberService {
         return ResponseDto.success("로그인 성공");
     }
 
+    public ResponseDto<?> myPage(UserDetailsImpl userDetails) {
+        List<ClubMember> joinClub = clubMemberRepository.findAllByMember(userDetails.getMember());
+        List<MyPageClubResponseDto> clubList = new ArrayList<>();
 
+        for (ClubMember club:joinClub) {
+            clubList.add(new MyPageClubResponseDto(club.getClub()));
+        }
+        return ResponseDto.success(new MyPageResponseDto(userDetails.getMember(), clubList));
+    }
+
+    public ResponseDto<?> myPageMadeByMe(UserDetailsImpl userDetails) {
+        List<Club> madeClub = clubRepository.findAllByLeader(userDetails.getMember());
+        List<MyPageClubResponseDto> clubList = new ArrayList<>();
+        for (Club club : madeClub) {
+            clubList.add(new MyPageClubResponseDto(club));
+        }
+        return ResponseDto.success(clubList);
+    }
 }
 
