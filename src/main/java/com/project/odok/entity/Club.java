@@ -33,13 +33,16 @@ public class Club extends TimeStamped{
     private long visitNum = 0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private Member leader;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<ClubMember> clubMemberList;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<ClubBook> clubBookList;
+
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    private List<Interest> clubInterestList;
 
 
     public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException{
@@ -54,7 +57,7 @@ public class Club extends TimeStamped{
         this.schedule = clubRequestDto.getSchedule();
         this.clubIntro = clubRequestDto.getClubIntro();
         this.clubSummary = clubRequestDto.getClubSummary();
-        this.member = member;
+        this.leader = member;
     }
 
     public void update(ClubRequestDto clubRequestDto, S3UploadService s3UploadService, String dir) throws IOException{

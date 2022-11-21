@@ -65,6 +65,20 @@ public class ClubService {
     }
 
 
+    // Top5 인기 모임 조회
+    public ResponseDto<?> getTop5Clubs() {
+
+        List<Club> clubList = clubRepository.findTop5ByOrderByVisitNumDesc();
+        List<ClubsInfoResponseDto> clubResponseDtoList = new ArrayList<>();
+
+        for (Club club : clubList) {
+
+            clubResponseDtoList.add(new ClubsInfoResponseDto(club));
+        }
+        return ResponseDto.success(clubResponseDtoList);
+    }
+
+
     // 모임 상세 조회
     @Transactional
     public ResponseDto<?> getClub(Long clubId, Member member) {
@@ -74,7 +88,7 @@ public class ClubService {
 
         ClubBook clubBook = clubBookReqository.findByClub(club);
 
-        int clubMemberNum = clubMemberRepository.countAllByClub(club);
+        Integer clubMemberNum = clubMemberRepository.countAllByClub(club);
 
         if (!clubMemberRepository.existsByMemberAndClub(member, club) && !interestRepository.existsByMemberAndClub(member, club)) {
             return ResponseDto.success(new ClubResponseDto(club, clubBook, false, false, String.valueOf(clubMemberNum)));
@@ -97,7 +111,14 @@ public class ClubService {
         if (validateMember(member, club))
             throw new NotValidWriterException();
 
+        Book book1 = bookRepository.findByIsbn(clubRequestDto.getBook1());
+        Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
+        Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());
+
+        ClubBook clubBook = clubBookReqository.findByClub(club);
+
         club.update(clubRequestDto, s3UploadService, dir);
+        clubBook.update(book1,book2,book3,clubRequestDto);
 
         return ResponseDto.success("모임정보 수정 완료");
     }
@@ -155,7 +176,7 @@ public class ClubService {
     }
 
     public boolean validateMember(Member member, Club club) {
-        return !member.getMemberId().equals(club.getMember().getMemberId());
+        return !member.getMemberId().equals(club.getLeader().getMemberId());
     }
 
 }

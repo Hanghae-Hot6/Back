@@ -34,4 +34,12 @@ public class ClubBook extends TimeStamped {
         this.bookSummary = clubRequestDto.getBookSummary();
     }
 
+    public void update(Book book1, Book book2, Book book3, ClubRequestDto clubRequestDto){
+        this.book1 = book1;
+        this.book2 = book2;
+        this.book3 = book3;
+        this.bookIntro = clubRequestDto.getBookIntro();
+        this.bookSummary = clubRequestDto.getBookSummary();
+    }
+
 }

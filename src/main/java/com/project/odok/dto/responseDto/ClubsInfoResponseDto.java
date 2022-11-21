@@ -10,7 +10,7 @@ public class ClubsInfoResponseDto {
     private Long clubId;
     private String thumbnail;
     private String clubName;
-    private String memberId;
+    private String leader;
     private String category;
     private String summary;
     private String memberLimit;
@@ -20,7 +20,7 @@ public class ClubsInfoResponseDto {
         this.clubId = club.getClubId();
         this.thumbnail = club.getThumbnail();
         this.clubName = club.getClubName();
-        this.memberId = club.getMember().getMemberId();
+        this.leader = club.getLeader().getMemberId();
         this.category = club.getCategory();
         this.summary = club.getClubSummary();
         this.memberLimit = club.getMemberMaxNum();
