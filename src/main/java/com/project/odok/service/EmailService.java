@@ -2,6 +2,7 @@ package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.requestDto.member.FindIdRequestDto;
+import com.project.odok.dto.requestDto.member.FindPasswordRequestDto;
 import com.project.odok.entity.Member;
 import com.project.odok.repository.MemberRepository;
 import com.project.odok.service.util.RedisUtil;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -30,6 +32,7 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
     private String auth; //인증번호 생성
 
     @Value("${spring.mail.username}")
@@ -86,6 +89,28 @@ public class EmailService {
         return message;
     }
 
+    public MimeMessage findPassword(Member member, String email) throws MessagingException, UnsupportedEncodingException {
+        auth = createKey();
+        log.info("임시 비밀번호 : " + auth);
+        member.updatePassword(member, passwordEncoder.encode(auth));
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        message.addRecipients(MimeMessage.RecipientType.TO, email); // to 보내는 대상
+        message.setSubject("ODOK 임시 비밀번호 발급"); //메일 제목
+
+        // 메일 내용 메일의 subtype을 html로 지정하여 html문법 사용 가능
+        String msg = "";
+        msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">임시 비밀번호</h1>";
+        msg += "<div style=\"padding-right: 30px; padding-left: 30px; margin: 32px 0 40px;\"><table style=\"border-collapse: collapse; border: 0; background-color: #F4F4F4; height: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px;\"><tbody><tr><td style=\"text-align: center; vertical-align: middle; font-size: 30px;\">";
+        msg += auth;
+        msg += "</td></tr></tbody></table></div>";
+
+        message.setText(msg, "utf-8", "html"); //내용, charset타입, subtype
+        message.setFrom(new InternetAddress(id, "prac_Admin")); //보내는 사람의 메일 주소, 보내는 사람 이름
+
+        return message;
+    }
+
     /*
         메일 발송
         sendSimpleMessage의 매개변수로 들어온 to는 인증번호를 받을 메일주소
@@ -108,7 +133,7 @@ public class EmailService {
         return ResponseDto.success(auth); // 메일로 보냈던 인증 코드를 서버로 리턴
     }
 
-    public ResponseDto<?> sendEmailMessage(FindIdRequestDto findIdRequestDto)throws Exception {
+    public ResponseDto<?> sendIdMessage(FindIdRequestDto findIdRequestDto)throws Exception {
         MimeMessage message = findId(findIdRequestDto);
         try{
             javaMailSender.send(message); // 메일 발송
@@ -116,8 +141,23 @@ public class EmailService {
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
-        log.info("찾는 이메일 : " + auth);
+        log.info("찾는 아이디 : " + auth);
         return ResponseDto.success("이메일을 메일로 보냈습니다."); // 메일로 보냈던 인증 코드를 서버로 리턴
+    }
+
+    public ResponseDto<?> sendPasswordMessage(FindPasswordRequestDto findPasswordRequestDto)throws Exception {
+        Member member = memberRepository.findById(findPasswordRequestDto.getId()).orElseThrow(
+                () -> new UsernameNotFoundException("등록되지 않은 ID 입니다.")
+        );
+        MimeMessage message = findPassword(member, member.getEmail());
+        try{
+            javaMailSender.send(message); // 메일 발송
+        }catch(MailException es){
+            es.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+        log.info("임시 비밀번호 : " + auth);
+        return ResponseDto.success("임시 비밀번호를 메일로 보냈습니다."); // 메일로 보냈던 인증 코드를 서버로 리턴
     }
 
     public ResponseDto<?> verifyEmail(String key) {

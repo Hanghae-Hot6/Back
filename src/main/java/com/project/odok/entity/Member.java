@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class Member extends TimeStamped {
     @Id
     private String memberId;
+    @Column(unique = true)
     private String email;
     private String username;
     private String address;
@@ -57,6 +58,18 @@ public class Member extends TimeStamped {
         this.password = member.getPassword();
         this.authority = Authority.ROLE_USER;
         this.kakaoId = kakaoId;
+        return member;
+    }
+
+    public Member updatePassword(Member member, String encodedPassword) {
+        this.memberId = member.getMemberId();
+        this.email = member.getEmail();
+        this.username = member.getUsername();
+        this.address = member.getAddress();
+        this.phoneNumber = member.getPhoneNumber();
+        this.password = encodedPassword;
+        this.authority = Authority.ROLE_USER;
+        this.kakaoId = member.kakaoId;
         return member;
     }
 

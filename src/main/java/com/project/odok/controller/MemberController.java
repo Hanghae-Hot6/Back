@@ -3,6 +3,7 @@ package com.project.odok.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.requestDto.member.FindIdRequestDto;
+import com.project.odok.dto.requestDto.member.FindPasswordRequestDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.service.EmailService;
@@ -61,7 +62,12 @@ public class MemberController {
 
     @PostMapping("findId")
     public ResponseDto<?> findId(@RequestBody FindIdRequestDto requestDto) throws Exception {
-        return emailService.sendEmailMessage(requestDto);
+        return emailService.sendIdMessage(requestDto);
+    }
+
+    @PostMapping("findPassword")
+    public ResponseDto<?> findPassword(@RequestBody FindPasswordRequestDto findPasswordRequestDto) throws Exception {
+        return emailService.sendPasswordMessage(findPasswordRequestDto);
     }
 }
 
