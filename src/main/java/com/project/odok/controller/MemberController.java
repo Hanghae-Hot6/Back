@@ -64,6 +64,12 @@ public class MemberController {
         return memberService.myPageMadeByMe(userDetails);
     }
 
+    @GetMapping("/mypage/interest")
+    @Operation(summary = "관심 있는 모임", description = "내가 관심 있는 모임 리스트")
+    public ResponseDto<?> myPageInterest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.myPageInterest(userDetails);
+    }
+
     @GetMapping("/mailConfirm")
     public ResponseDto<?> mailConfirm(@RequestParam String email) throws Exception {
         return emailService.sendSimpleMessage(email);

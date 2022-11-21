@@ -8,9 +8,11 @@ import com.project.odok.dto.responseDto.MyPageClubResponseDto;
 import com.project.odok.dto.responseDto.MyPageResponseDto;
 import com.project.odok.entity.Club;
 import com.project.odok.entity.ClubMember;
+import com.project.odok.entity.Interest;
 import com.project.odok.entity.Member;
 import com.project.odok.repository.ClubMemberRepository;
 import com.project.odok.repository.ClubRepository;
+import com.project.odok.repository.InterestRepository;
 import com.project.odok.repository.MemberRepository;
 import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.security.jwt.JwtFilter;
@@ -35,6 +37,7 @@ public class MemberService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final ClubRepository clubRepository;
     private final ClubMemberRepository clubMemberRepository;
+    private final InterestRepository interestRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -86,6 +89,15 @@ public class MemberService {
         List<MyPageClubResponseDto> clubList = new ArrayList<>();
         for (Club club : madeClub) {
             clubList.add(new MyPageClubResponseDto(club));
+        }
+        return ResponseDto.success(clubList);
+    }
+
+    public ResponseDto<?> myPageInterest(UserDetailsImpl userDetails) {
+        List<Interest> interestClub = interestRepository.findAllByMember(userDetails.getMember());
+        List<MyPageClubResponseDto> clubList = new ArrayList<>();
+        for (Interest interest : interestClub) {
+            clubList.add(new MyPageClubResponseDto(interest.getClub()));
         }
         return ResponseDto.success(clubList);
     }
