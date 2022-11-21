@@ -6,6 +6,8 @@ import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.*;
 import com.project.odok.repository.*;
+import com.project.odok.security.exception.customExceptions.NotFoundClubException;
+import com.project.odok.security.exception.customExceptions.NotValidWriterException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,25 +69,22 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> getClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
+        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
         club.updateVisitCount();
 
         ClubBook clubBook = clubBookReqository.findByClub(club);
 
-        if (!clubMemberRepository.existsByMemberAndClub(member, club) && !interestRepository.existsByMemberAndClub(member, club)){
-            return ResponseDto.success(new ClubResponseDto(club,clubBook,false,false));
+        int clubMemberNum = clubMemberRepository.countAllByClub(club);
+
+        if (!clubMemberRepository.existsByMemberAndClub(member, club) && !interestRepository.existsByMemberAndClub(member, club)) {
+            return ResponseDto.success(new ClubResponseDto(club, clubBook, false, false, String.valueOf(clubMemberNum)));
+        } else if (!clubMemberRepository.existsByMemberAndClub(member, club) && interestRepository.existsByMemberAndClub(member, club)) {
+            return ResponseDto.success(new ClubResponseDto(club, clubBook, false, true, String.valueOf(clubMemberNum)));
+        } else if (clubMemberRepository.existsByMemberAndClub(member, club) && !interestRepository.existsByMemberAndClub(member, club)) {
+            return ResponseDto.success(new ClubResponseDto(club, clubBook, true, false, String.valueOf(clubMemberNum)));
+        } else {
+            return ResponseDto.success(new ClubResponseDto(club, clubBook, true, true, String.valueOf(clubMemberNum)));
         }
-
-        else if (!clubMemberRepository.existsByMemberAndClub(member, club) && interestRepository.existsByMemberAndClub(member, club)) {
-            return ResponseDto.success(new ClubResponseDto(club,clubBook,false,true));
-        }
-
-        else if (clubMemberRepository.existsByMemberAndClub(member, club) && !interestRepository.existsByMemberAndClub(member, club)) {
-            return ResponseDto.success(new ClubResponseDto(club,clubBook,true,false));
-        }
-
-
-        return ResponseDto.success(new ClubResponseDto(club, clubBook,true,true));
     }
 
 
@@ -93,10 +92,10 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> updateClub(Long clubId, Member member, ClubRequestDto clubRequestDto) throws IOException {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
+        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 
         if (validateMember(member, club))
-            throw new IllegalArgumentException("모임의 생성자와 현재 사용자가 일치하지 않습니다.");
+            throw new NotValidWriterException();
 
         club.update(clubRequestDto, s3UploadService, dir);
 
@@ -108,10 +107,10 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> deleteClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
+        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 
         if (validateMember(member, club))
-            throw new IllegalArgumentException("모임의 생성자와 현재 사용자가 일치하지 않습니다.");
+            throw new NotValidWriterException();
 
         clubRepository.delete(club);
 
@@ -122,11 +121,15 @@ public class ClubService {
     // 모임 가입하기
     public ResponseDto<?> joinClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
+        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
+
+        if (clubMemberRepository.countAllByClub(club) >= Integer.parseInt(club.getMemberMaxNum())) {
+            return ResponseDto.fail("가입 정원이 초과되었습니다.");
+        }
 
         ClubMember clubMember = new ClubMember(club, member);
 
-        if (!clubMemberRepository.existsByMemberAndClub(member, club)){
+        if (!clubMemberRepository.existsByMemberAndClub(member, club)) {
             clubMemberRepository.save(clubMember);
             return ResponseDto.success("모임 가입 완료");
         }
@@ -139,12 +142,12 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> withdrawClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new NullPointerException("해당 모임이 존재하지 않습니다."));
+        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 
-        if (!clubMemberRepository.existsByMemberAndClub(member,club))
+        if (!clubMemberRepository.existsByMemberAndClub(member, club))
             return ResponseDto.success("모임에 가입하지 않은 유저입니다.");
 
-        ClubMember clubMember = clubMemberRepository.findByMemberAndClub(member,club);
+        ClubMember clubMember = clubMemberRepository.findByMemberAndClub(member, club);
 
         clubMemberRepository.delete(clubMember);
 
@@ -154,6 +157,5 @@ public class ClubService {
     public boolean validateMember(Member member, Club club) {
         return !member.getMemberId().equals(club.getMember().getMemberId());
     }
-
 
 }
