@@ -45,8 +45,9 @@ jobs:
         ECR_REPOSITORY: odok
         IMAGE_TAG: latest
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker build -t odok .
+        docker tag odok:latest 105006269418.dkr.ecr.ap-northeast-2.amazonaws.com/odok:latest
+        docker push 105006269418.dkr.ecr.ap-northeast-2.amazonaws.com/odok:latest
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
     - name: Get current time
