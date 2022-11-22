@@ -62,14 +62,14 @@ jobs:
         cp Dockerrun.aws.json deploy/Dockerrun.aws.json
         cd deploy && zip -r deploy.zip .
         
-#     - name: Beanstalk Deploy
-#       uses: einaregilsson/beanstalk-deploy@v14
-#       with:
-#         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#         application_name:
-#         environment_name:
-#         version_label: earth-docker-${{ steps.current-time.output.formattedTime }}
-#         region:
-#         deployment_package: deploy/deploy.zip
-#         wait_for_environment_recovery: 200
+    - name: Beanstalk Deploy
+      uses: einaregilsson/beanstalk-deploy@v14
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: odok
+        environment_name: Odok-env-2
+        version_label: earth-docker-${{ steps.current-time.output.formattedTime }}
+        region:
+          deployment_package: deploy/deploy.zip
+          wait_for_environment_recovery: 200
