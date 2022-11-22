@@ -1,5 +1,6 @@
 package com.project.odok.repository;
 
+import com.project.odok.entity.ChatRoom;
 import com.project.odok.entity.ChatRoomMember;
 import com.project.odok.entity.Club;
 import com.project.odok.entity.Member;
@@ -11,6 +12,8 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMember, 
 
     List<ChatRoomMember> findAllByMember(Member member);
     ChatRoomMember findByClub(Club club);
+
+    ChatRoomMember findByMemberAndChatRoom(Member sender, ChatRoom chatRoom);
 
 
 }
