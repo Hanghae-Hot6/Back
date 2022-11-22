@@ -42,8 +42,8 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: 105006269418.dkr.ecr.us-east-1.amazonaws.com/odok
-        IMAGE_TAG: odok
+        ECR_REPOSITORY: odok
+        IMAGE_TAG: latest
       run:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
