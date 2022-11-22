@@ -21,7 +21,6 @@ public class RedisSubscriber implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        System.out.println("메세지 받음!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         try {
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
             MessageResponseDto responseDto = objectMapper.readValue(publishMessage, MessageResponseDto.class);
