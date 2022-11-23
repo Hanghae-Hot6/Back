@@ -43,7 +43,7 @@ jobs:
         shell: bash
 
       - name: Make zip file
-        run: zip -r ./wef.zip .
+        run: zip -r ./odok.zip .
         shell: bash
 
       - name: Configure AWS credentials
@@ -54,7 +54,7 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to S3
-        run: aws s3 cp --region us-east-1 ./wef.zip s3://$S3_BUCKET_NAME/
+        run: aws s3 cp --region us-east-1 ./odok.zip s3://$S3_BUCKET_NAME/
 
 
       # Deploy
@@ -67,5 +67,5 @@ jobs:
           --application-name odok
           --deployment-group-name wef-group
           --file-exists-behavior OVERWRITE
-          --s3-location bucket=odok-deploy,bundleType=zip,key=wef.zip
+          --s3-location bucket=odok-deploy,bundleType=zip,key=odok.zip
           --region us-east-1
