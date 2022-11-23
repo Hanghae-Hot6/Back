@@ -6,9 +6,14 @@ import com.project.odok.entity.Interest;
 import com.project.odok.entity.Member;
 import com.project.odok.repository.ClubRepository;
 import com.project.odok.repository.InterestRepository;
-import com.project.odok.security.exception.customExceptions.NotFoundClubException;
+import com.project.odok.security.UserDetailsImpl;
+import com.project.odok.security.exception.customexceptions.InvalidTokenException;
+import com.project.odok.security.exception.customexceptions.NotFoundClubException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.embedded.undertow.UndertowServletWebServer;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +24,13 @@ public class InterestService {
 
 
     // 모임 관심 체크/취소
-    public ResponseDto<?> interestClub(Long clubId, Member member) {
+    public ResponseDto<?> interestClub(Long clubId, UserDetailsImpl userDetails) {
+
+        if (Objects.isNull(userDetails)) {
+            throw new InvalidTokenException();
+        }
+
+        Member member = userDetails.getMember();
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 

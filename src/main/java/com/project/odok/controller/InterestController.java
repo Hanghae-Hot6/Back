@@ -21,7 +21,7 @@ public class InterestController {
     public ResponseDto<?> interestClub(@PathVariable(name = "club-id") Long clubId,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return interestService.interestClub(clubId, userDetails.getMember());
+        return interestService.interestClub(clubId, userDetails);
     }
 
 }

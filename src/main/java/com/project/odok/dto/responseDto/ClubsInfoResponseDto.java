@@ -12,8 +12,12 @@ public class ClubsInfoResponseDto {
     private String clubName;
     private String leader;
     private String category;
+    private long visitNum;
     private String summary;
     private String memberLimit;
+    private String location;
+    private String startDate;
+    private String finishDate;
 
 
     public ClubsInfoResponseDto(Club club){
@@ -22,7 +26,11 @@ public class ClubsInfoResponseDto {
         this.clubName = club.getClubName();
         this.leader = club.getLeader().getMemberId();
         this.category = club.getCategory();
+        this.visitNum = club.getVisitNum();
         this.summary = club.getClubSummary();
         this.memberLimit = club.getMemberMaxNum();
+        this.location = club.getLocation();
+        this.startDate = club.getStartDate();
+        this.finishDate = club.getFinishDate();
     }
 }

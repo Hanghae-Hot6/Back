@@ -45,7 +45,7 @@ public class ChatRoomService {
     // 모임 가입 시 채팅방에 추가
     public void addMemberChatRoom(Member member, Club club){
 
-        ChatRoomMember getChatRoom = chatRoomMemberRepository.findByClub(club);
+        ChatRoomMember getChatRoom = chatRoomMemberRepository.findByClubAndMember(club,club.getLeader());
 
         String chatRoomId = getChatRoom.getChatRoom().getChatRoomId();
         ChatRoom chatRoom = getChatRoom.getChatRoom();
