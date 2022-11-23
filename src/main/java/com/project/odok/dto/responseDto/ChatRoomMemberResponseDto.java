@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 public class ChatRoomMemberResponseDto {
 
     private String chatRoomId;
-    private String title;
-
+    private String thumbnail;
+    private String clubName;
+    private int participants;
 
     public ChatRoomMemberResponseDto(ChatRoomMember chatRoomMember){
         this.chatRoomId = chatRoomMember.getChatRoom().getChatRoomId();
-        this.title = chatRoomMember.getChatRoom().getTitle();
+        this.thumbnail = chatRoomMember.getClub().getThumbnail();
+        this.clubName = chatRoomMember.getClub().getClubName();
+        this.participants = chatRoomMember.getChatRoom().getMemberList().size();
     }
 }

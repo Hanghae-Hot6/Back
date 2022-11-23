@@ -3,11 +3,10 @@ package com.project.odok.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 @Getter
@@ -21,6 +20,9 @@ public class ChatRoom extends TimeStamped{
     @Column(nullable = false)
     private String title;
 
+
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+    private List<ChatRoomMember> memberList;
 
     public ChatRoom(String chatRoomId, String title){
         this.chatRoomId = chatRoomId;
