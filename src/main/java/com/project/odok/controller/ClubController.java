@@ -21,7 +21,7 @@ public class ClubController {
     public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                      @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        return clubService.createClub(userDetails.getMember(), clubRequestDto);
+        return clubService.createClub(userDetails, clubRequestDto);
     }
 
 
@@ -44,7 +44,7 @@ public class ClubController {
     public ResponseDto<?> getClub(@PathVariable(name = "club-id") Long clubId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.getClub(clubId, userDetails.getMember());
+        return clubService.getClub(clubId, userDetails);
     }
 
 
@@ -54,7 +54,7 @@ public class ClubController {
                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
                                      @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        return clubService.updateClub(clubId, userDetails.getMember(), clubRequestDto);
+        return clubService.updateClub(clubId, userDetails, clubRequestDto);
     }
 
 
@@ -63,7 +63,7 @@ public class ClubController {
     public ResponseDto<?> deleteClub(@PathVariable(name = "club-id") Long clubId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.deleteClub(clubId, userDetails.getMember());
+        return clubService.deleteClub(clubId, userDetails);
     }
 
 
@@ -72,7 +72,7 @@ public class ClubController {
     public ResponseDto<?> joinClub(@PathVariable(name = "club-id") Long clubId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.joinClub(clubId, userDetails.getMember());
+        return clubService.joinClub(clubId, userDetails);
     }
 
 
@@ -81,7 +81,7 @@ public class ClubController {
     public ResponseDto<?> withdrawClub(@PathVariable(name = "club-id") Long clubId,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.withdrawClub(clubId, userDetails.getMember());
+        return clubService.withdrawClub(clubId, userDetails);
     }
 
 }

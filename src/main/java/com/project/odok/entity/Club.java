@@ -21,7 +21,6 @@ public class Club extends TimeStamped{
     private String clubName;
     private String category;
     private String thumbnail;
-    private String memberMinNum;  // 진짜 필요한건지 의문
     private String memberMaxNum;
     private String startDate;
     private String finishDate;
@@ -46,12 +45,14 @@ public class Club extends TimeStamped{
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     private List<Interest> clubInterestList;
 
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    private List<ChatRoomMember> chatRoomMemberList;
+
 
     public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException{
         this.clubName = clubRequestDto.getClubName();
         this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir) : null;
         this.category = clubRequestDto.getCategory();
-        this.memberMinNum = clubRequestDto.getMemberMinNum();
         this.memberMaxNum = clubRequestDto.getMemberMaxNum();
         this.startDate = clubRequestDto.getStartDate();
         this.finishDate = clubRequestDto.getFinishDate();
@@ -66,7 +67,6 @@ public class Club extends TimeStamped{
         this.clubName = clubRequestDto.getClubName();
         this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir) : null;
         this.category = clubRequestDto.getCategory();
-        this.memberMinNum = clubRequestDto.getMemberMinNum();
         this.memberMaxNum = clubRequestDto.getMemberMaxNum();
         this.startDate = clubRequestDto.getStartDate();
         this.finishDate = clubRequestDto.getFinishDate();
