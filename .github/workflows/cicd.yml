@@ -65,7 +65,7 @@ jobs:
         run:
           aws deploy create-deployment
           --application-name odok
-          --deployment-group-name wef-group
+          --deployment-group-name odok
           --file-exists-behavior OVERWRITE
           --s3-location bucket=odok-deploy,bundleType=zip,key=odok.zip
           --region us-east-1
