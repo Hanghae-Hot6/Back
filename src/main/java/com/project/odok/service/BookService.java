@@ -80,6 +80,7 @@ public class BookService {
                     bookInfo.put("title", title);
                     bookInfo.put("isbn", isbn);
                     bookInfo.put("pubdate", pubdate);
+                    bookInfo.put(("description"), description);
 
                     searchList.add(bookInfo);
 
