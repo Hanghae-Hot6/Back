@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class Error {
 
     private Integer status;
-    private String field;
+    private String code;
     private String message;
 
 }

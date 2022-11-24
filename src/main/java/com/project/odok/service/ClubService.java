@@ -7,7 +7,6 @@ import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.*;
 import com.project.odok.repository.*;
 import com.project.odok.security.UserDetailsImpl;
-import com.project.odok.security.exception.customexceptions.InvalidTokenException;
 import com.project.odok.security.exception.customexceptions.InvalidWriterException;
 import com.project.odok.security.exception.customexceptions.NotFoundClubException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -32,16 +30,11 @@ public class ClubService {
     private final ClubBookReqository clubBookReqository;
     private final S3UploadService s3UploadService;
     private final InterestRepository interestRepository;
-
     private final ChatRoomService chatRoomService;
 
 
     // 모임 등록
     public ResponseDto<?> createClub(UserDetailsImpl userDetails, ClubRequestDto clubRequestDto) throws IOException {
-
-        if (Objects.isNull(userDetails)) {
-            throw new InvalidTokenException();
-        }
 
         Member member = userDetails.getMember();
 
@@ -96,10 +89,6 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> getClub(Long clubId, UserDetailsImpl userDetails) {
 
-        if (Objects.isNull(userDetails)) {
-            throw new InvalidTokenException();
-        }
-
         Member member = userDetails.getMember();
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
@@ -125,10 +114,6 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> updateClub(Long clubId, UserDetailsImpl userDetails, ClubRequestDto clubRequestDto) throws IOException {
 
-        if (Objects.isNull(userDetails)) {
-            throw new InvalidTokenException();
-        }
-
         Member member = userDetails.getMember();
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
@@ -153,10 +138,6 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> deleteClub(Long clubId, UserDetailsImpl userDetails) {
 
-        if (Objects.isNull(userDetails)) {
-            throw new InvalidTokenException();
-        }
-
         Member member = userDetails.getMember();
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
@@ -172,10 +153,6 @@ public class ClubService {
 
     // 모임 가입하기
     public ResponseDto<?> joinClub(Long clubId, UserDetailsImpl userDetails) {
-
-        if (Objects.isNull(userDetails)) {
-            throw new InvalidTokenException();
-        }
 
         Member member = userDetails.getMember();
 
@@ -202,10 +179,6 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> withdrawClub(Long clubId, UserDetailsImpl userDetails) {
 
-        if (Objects.isNull(userDetails)) {
-            throw new InvalidTokenException();
-        }
-
         Member member = userDetails.getMember();
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
@@ -214,6 +187,10 @@ public class ClubService {
             return ResponseDto.success("모임에 가입하지 않은 유저입니다.");
 
         ClubMember clubMember = clubMemberRepository.findByMemberAndClub(member, club);
+
+        if (member.getMemberId().equals(club.getLeader().getMemberId())){
+            deleteClub(clubId,userDetails);
+        }
 
         clubMemberRepository.delete(clubMember);
 
