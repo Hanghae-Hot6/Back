@@ -22,7 +22,6 @@ public class ClubBook extends TimeStamped {
     private Book book2;
     @ManyToOne(fetch = FetchType.LAZY)
     private Book book3;
-    private String bookIntro;
     private String bookSummary;
 
     public ClubBook(Club club, Book book1, Book book2, Book book3, ClubRequestDto clubRequestDto){
@@ -30,7 +29,6 @@ public class ClubBook extends TimeStamped {
         this.book1 = book1;
         this.book2 = book2;
         this.book3 = book3;
-        this.bookIntro = clubRequestDto.getBookIntro();
         this.bookSummary = clubRequestDto.getBookSummary();
     }
 
@@ -38,7 +36,6 @@ public class ClubBook extends TimeStamped {
         this.book1 = book1;
         this.book2 = book2;
         this.book3 = book3;
-        this.bookIntro = clubRequestDto.getBookIntro();
         this.bookSummary = clubRequestDto.getBookSummary();
     }
 
