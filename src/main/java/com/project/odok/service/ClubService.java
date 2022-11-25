@@ -147,6 +147,8 @@ public class ClubService {
 
         clubRepository.delete(club);
 
+        chatRoomService.deleteMemberChatRoom(member, club);
+
         return ResponseDto.success("모임 삭제 완료");
     }
 

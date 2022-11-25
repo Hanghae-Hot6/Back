@@ -62,6 +62,19 @@ public class ChatRoomService {
         chatMessageRepository.save(chatMessage);
     }
 
+    // 모임 탈퇴 시 채팅방 삭제
+    public void deleteMemberChatRoom(Member member, Club club){
+
+        if(member.getMemberId().equals(club.getLeader())){
+            ChatRoomMember deleteChatRoom = chatRoomMemberRepository.findByMember(club.getLeader());
+            chatRoomMemberRepository.delete(deleteChatRoom);
+        } else {
+            ChatRoomMember deleteChatRoomMember = chatRoomMemberRepository.findByMember(member);
+            chatRoomMemberRepository.delete(deleteChatRoomMember);
+        }
+
+    }
+
 
     // 모임 참여한 모든 채팅방 조회
     public ResponseDto<?> findAllChatRoom(Member member){
