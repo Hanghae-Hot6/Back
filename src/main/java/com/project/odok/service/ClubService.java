@@ -34,6 +34,7 @@ public class ClubService {
 
 
     // 모임 등록
+    @Transactional
     public ResponseDto<?> createClub(UserDetailsImpl userDetails, ClubRequestDto clubRequestDto) throws IOException {
 
         Member member = userDetails.getMember();
@@ -154,6 +155,7 @@ public class ClubService {
 
 
     // 모임 가입하기
+    @Transactional
     public ResponseDto<?> joinClub(Long clubId, UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
@@ -195,6 +197,8 @@ public class ClubService {
         }
 
         clubMemberRepository.delete(clubMember);
+
+        chatRoomService.deleteMemberChatRoom(member, club);
 
         return ResponseDto.success("모임가입 취소 완료");
     }

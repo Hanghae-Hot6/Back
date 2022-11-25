@@ -16,9 +16,14 @@ public class ClubRequestDto {
 
     private String category;
 
+    private String clubIntro;
+
+    private String book1;
+    private String book2;
+    private String book3;
+
     private MultipartFile thumbnail;
 
-    private String memberMinNum;
     private String memberMaxNum;
 
     private String startDate;
@@ -28,15 +33,7 @@ public class ClubRequestDto {
 
     private String schedule;
 
-    private String clubIntro;
-
     private String clubSummary;
-
-    private String book1;
-    private String book2;
-    private String book3;
-
-    private String bookIntro;
 
     private String bookSummary;
 }
