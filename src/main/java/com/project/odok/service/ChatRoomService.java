@@ -22,7 +22,7 @@ public class ChatRoomService {
 
 
     // 모임 개설 시 채팅방 개설
-    public void createdMemberChatRoom(Member member, Club club){
+    public void createdMemberChatRoom(Member member, Club club) {
 
         String createdChatRoomId = UUID.randomUUID().toString();
 
@@ -33,8 +33,8 @@ public class ChatRoomService {
         chatRoomMemberRepository.save(chatRoomMember);
 
         ChatMessage chatMessage = new ChatMessage(createdChatRoomId
-                ,"SYSTEM"
-                ,"SYSTEM"
+                , "SYSTEM"
+                , "SYSTEM"
                 , "채팅방 대화가 시작되었습니다 :)"
                 , createdChatRoom.chatDate());
 
@@ -43,9 +43,9 @@ public class ChatRoomService {
 
 
     // 모임 가입 시 채팅방에 추가
-    public void addMemberChatRoom(Member member, Club club){
+    public void addMemberChatRoom(Member member, Club club) {
 
-        ChatRoomMember getChatRoom = chatRoomMemberRepository.findByClubAndMember(club,club.getLeader());
+        ChatRoomMember getChatRoom = chatRoomMemberRepository.findByClubAndMember(club, club.getLeader());
 
         String chatRoomId = getChatRoom.getChatRoom().getChatRoomId();
         ChatRoom chatRoom = getChatRoom.getChatRoom();
@@ -54,8 +54,8 @@ public class ChatRoomService {
         chatRoomMemberRepository.save(chatRoomMember);
 
         ChatMessage chatMessage = new ChatMessage(chatRoomId
-                ,"SYSTEM"
-                ,"SYSTEM"
+                , "SYSTEM"
+                , "SYSTEM"
                 , member.getMemberId() + "님이 참여 하였습니다. :)"
                 , chatRoom.chatDate());
 
@@ -63,21 +63,16 @@ public class ChatRoomService {
     }
 
     // 모임 탈퇴 시 채팅방 삭제
-    public void deleteMemberChatRoom(Member member, Club club){
+    public void deleteMemberChatRoom(Member member, Club club) {
 
-        if(member.getMemberId().equals(club.getLeader())){
-            ChatRoomMember deleteChatRoom = chatRoomMemberRepository.findByMember(club.getLeader());
-            chatRoomMemberRepository.delete(deleteChatRoom);
-        } else {
-            ChatRoomMember deleteChatRoomMember = chatRoomMemberRepository.findByMember(member);
-            chatRoomMemberRepository.delete(deleteChatRoomMember);
-        }
+        ChatRoomMember deleteChatRoomMember = chatRoomMemberRepository.findByClubAndMember(club, member);
+        chatRoomMemberRepository.delete(deleteChatRoomMember);
 
     }
 
 
     // 모임 참여한 모든 채팅방 조회
-    public ResponseDto<?> findAllChatRoom(Member member){
+    public ResponseDto<?> findAllChatRoom(Member member) {
 
         List<ChatRoomMember> chatRoomMemberList = chatRoomMemberRepository.findAllByMember(member);
 
@@ -91,13 +86,12 @@ public class ChatRoomService {
     }
 
     // 특정 채팅방 조회
-    public ResponseDto<?> findOneRoom(String roomId){
+    public ResponseDto<?> findOneRoom(String roomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
                 () -> new RuntimeException("해당 채팅방이 존재하지 않습니다.")
         );
         return ResponseDto.success(chatRoom.getTitle() + " 채팅방이 조회 되었습니다.");
     }
-
 
 
 }

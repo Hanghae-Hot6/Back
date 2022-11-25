@@ -16,11 +16,11 @@ public class ClubBook extends TimeStamped {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private Club club;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Book book1;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Book book2;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Book book3;
     private String bookSummary;
 
