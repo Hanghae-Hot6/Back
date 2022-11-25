@@ -31,6 +31,7 @@ public class ClubService {
     private final S3UploadService s3UploadService;
     private final InterestRepository interestRepository;
     private final ChatRoomService chatRoomService;
+    private final ChatRoomRepository chatRoomRepository;
 
 
     // 모임 등록
@@ -129,7 +130,7 @@ public class ClubService {
         ClubBook clubBook = clubBookReqository.findByClub(club);
 
         club.update(clubRequestDto, s3UploadService, dir);
-        clubBook.update(book1,book2,book3,clubRequestDto);
+        clubBook.update(book1, book2, book3, clubRequestDto);
 
         return ResponseDto.success("모임정보 수정 완료");
     }
@@ -146,9 +147,11 @@ public class ClubService {
         if (validateMember(member, club))
             throw new InvalidWriterException();
 
+        ChatRoom chatRoom = chatRoomRepository.findByTitle(club.getClubName());
+
         clubRepository.delete(club);
 
-        chatRoomService.deleteMemberChatRoom(member, club);
+        chatRoomRepository.delete(chatRoom);
 
         return ResponseDto.success("모임 삭제 완료");
     }
@@ -192,13 +195,13 @@ public class ClubService {
 
         ClubMember clubMember = clubMemberRepository.findByMemberAndClub(member, club);
 
-        if (member.getMemberId().equals(club.getLeader().getMemberId())){
-            deleteClub(clubId,userDetails);
+        if (member.getMemberId().equals(club.getLeader().getMemberId())) {
+            deleteClub(clubId, userDetails);
+        } else {
+            clubMemberRepository.delete(clubMember);
+
+            chatRoomService.deleteMemberChatRoom(member, club);
         }
-
-        clubMemberRepository.delete(clubMember);
-
-        chatRoomService.deleteMemberChatRoom(member, club);
 
         return ResponseDto.success("모임가입 취소 완료");
     }
