@@ -112,6 +112,41 @@ public class EmailService {
         return message;
     }
 
+    public MimeMessage customerServiceMsg(Member member, String content) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        message.addRecipients(MimeMessage.RecipientType.TO, id); // to 보내는 대상
+        message.setSubject(String.format("%s님의 고객의 소리", member.getMemberId())); //메일 제목
+
+        // 메일 내용 메일의 subtype을 html로 지정하여 html문법 사용 가능
+        String msg = "";
+        msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">고객 소리함</h1>";
+        msg += "</h1>";
+        msg += "<div style=\"padding-right: 30px; padding-left: 30px; margin: 32px 0 40px;\"><table style=\"border-collapse: collapse; border: 0; background-color: #F4F4F4; height: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px;\"><tbody><tr><td style=\"text-align: center; vertical-align: middle; font-size: 30px;\">";
+        msg += String.format("%s님의 고객의 소리", member.getMemberId());
+        msg += "</td></tr></tbody></table></div>";
+        msg += "<div style=\"padding-right: 30px; padding-left: 30px; margin: 32px 0 40px;\"><table style=\"border-collapse: collapse; border: 0; background-color: #F4F4F4; height: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px;\"><tbody><tr><td style=\"text-align: center; vertical-align: middle; font-size: 30px;\">";
+        msg += content;
+        msg += "</td></tr></tbody></table></div>";
+
+        message.setText(msg, "utf-8", "html"); //내용, charset타입, subtype
+        message.setFrom(new InternetAddress(id, "prac_Admin")); //보내는 사람의 메일 주소, 보내는 사람 이름
+
+        return message;
+    }
+
+    public ResponseDto<?> customerService(Member member, String content)throws Exception {
+        try{
+            MimeMessage message = customerServiceMsg(member, content);
+            javaMailSender.send(message); // 메일 발송
+        }catch(MailException es){
+            es.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+        log.info("고객의 소리가 접수되었습니다.");
+        return ResponseDto.success("고객의 소리가 접수되었습니다."); // 메일로 보냈던 인증 코드를 서버로 리턴
+    }
+
     /*
         메일 발송
         sendSimpleMessage의 매개변수로 들어온 to는 인증번호를 받을 메일주소

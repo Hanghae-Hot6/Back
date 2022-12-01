@@ -95,5 +95,10 @@ public class MemberController {
     public ResponseDto<?> reissue(@RequestBody TokenRequestDto tokenRequestDto, HttpServletResponse response) {
         return memberService.reissue(tokenRequestDto, response);
     }
+
+    @PostMapping("/cs")
+    public ResponseDto<?> customerService(@RequestBody String content, @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+        return emailService.customerService(userDetails.getMember(), content);
+    }
 }
 
