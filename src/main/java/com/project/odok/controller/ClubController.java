@@ -21,67 +21,60 @@ public class ClubController {
     public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                      @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        return clubService.createClub(userDetails, clubRequestDto);
+        return clubService.createClub(userDetails.getMember(), clubRequestDto);
     }
 
 
-    // 모임 전체 조회
     @GetMapping
     public ResponseDto<?> getClubList(){
         return clubService.getClubList();
     }
 
 
-    // Top5 인기 모임 조회
     @GetMapping(value = "/top5")
     public ResponseDto<?> getTop5Clubs(){
         return clubService.getTop5Clubs();
     }
 
 
-    // 모임 상세 조회
     @GetMapping(value = "/{club-id}")
     public ResponseDto<?> getClub(@PathVariable(name = "club-id") Long clubId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.getClub(clubId, userDetails);
+        return clubService.getClub(clubId, userDetails.getMember());
     }
 
 
-    // 모임 수정
     @PutMapping(value = "/{club-id}")
     public ResponseDto<?> updateClub(@PathVariable(name = "club-id") Long clubId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
                                      @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
 
-        return clubService.updateClub(clubId, userDetails, clubRequestDto);
+        return clubService.updateClub(clubId, userDetails.getMember(), clubRequestDto);
     }
 
 
-    // 모임 삭제
     @DeleteMapping(value = "/{club-id}")
     public ResponseDto<?> deleteClub(@PathVariable(name = "club-id") Long clubId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.deleteClub(clubId, userDetails);
+        return clubService.deleteClub(clubId, userDetails.getMember());
     }
 
 
-    // 모임 가입
     @PostMapping(value = "/{club-id}/join")
     public ResponseDto<?> joinClub(@PathVariable(name = "club-id") Long clubId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.joinClub(clubId, userDetails);
+        return clubService.joinClub(clubId, userDetails.getMember());
     }
 
 
-    // 모임 탈퇴
     @DeleteMapping(value = "/{club-id}/withdraw")
     public ResponseDto<?> withdrawClub(@PathVariable(name = "club-id") Long clubId,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return clubService.withdrawClub(clubId, userDetails);
+        return clubService.withdrawClub(clubId, userDetails.getMember());
     }
 
 }

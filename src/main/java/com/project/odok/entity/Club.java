@@ -51,7 +51,7 @@ public class Club extends TimeStamped{
 
     public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException{
         this.clubName = clubRequestDto.getClubName();
-        this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir) : null;
+        this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir, clubRequestDto.getClubName()) : null;
         this.category = clubRequestDto.getCategory();
         this.memberMaxNum = clubRequestDto.getMemberMaxNum();
         this.startDate = clubRequestDto.getStartDate();
@@ -65,7 +65,7 @@ public class Club extends TimeStamped{
 
     public void update(ClubRequestDto clubRequestDto, S3UploadService s3UploadService, String dir) throws IOException{
         this.clubName = clubRequestDto.getClubName();
-        this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir) : null;
+        this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir,clubRequestDto.getClubName()) : null;
         this.category = clubRequestDto.getCategory();
         this.memberMaxNum = clubRequestDto.getMemberMaxNum();
         this.startDate = clubRequestDto.getStartDate();

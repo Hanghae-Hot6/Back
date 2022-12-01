@@ -6,7 +6,6 @@ import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.*;
 import com.project.odok.repository.*;
-import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.security.exception.customexceptions.InvalidWriterException;
 import com.project.odok.security.exception.customexceptions.NotFoundClubException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ public class ClubService {
 
     @Value("${cloud.aws.s3.dir}")
     private String dir;
+
     private final ClubRepository clubRepository;
     private final BookRepository bookRepository;
     private final ClubMemberRepository clubMemberRepository;
@@ -34,11 +34,8 @@ public class ClubService {
     private final ChatRoomRepository chatRoomRepository;
 
 
-    // 모임 등록
     @Transactional
-    public ResponseDto<?> createClub(UserDetailsImpl userDetails, ClubRequestDto clubRequestDto) throws IOException {
-
-        Member member = userDetails.getMember();
+    public ResponseDto<?> createClub(Member member, ClubRequestDto clubRequestDto) throws IOException {
 
         Club club = new Club(clubRequestDto, member, s3UploadService, dir);
         clubRepository.save(club);
@@ -59,7 +56,6 @@ public class ClubService {
     }
 
 
-    // 모임 전체 조회
     public ResponseDto<?> getClubList() {
 
         List<Club> clubList = clubRepository.findAllByOrderByCreatedAtDesc();
@@ -73,7 +69,6 @@ public class ClubService {
     }
 
 
-    // Top5 인기 모임 조회
     public ResponseDto<?> getTop5Clubs() {
 
         List<Club> clubList = clubRepository.findTop5ByOrderByVisitNumDesc();
@@ -87,11 +82,8 @@ public class ClubService {
     }
 
 
-    // 모임 상세 조회
     @Transactional
-    public ResponseDto<?> getClub(Long clubId, UserDetailsImpl userDetails) {
-
-        Member member = userDetails.getMember();
+    public ResponseDto<?> getClub(Long clubId, Member member) {
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
         club.updateVisitCount();
@@ -112,11 +104,8 @@ public class ClubService {
     }
 
 
-    // 모임 수정
     @Transactional
-    public ResponseDto<?> updateClub(Long clubId, UserDetailsImpl userDetails, ClubRequestDto clubRequestDto) throws IOException {
-
-        Member member = userDetails.getMember();
+    public ResponseDto<?> updateClub(Long clubId, Member member, ClubRequestDto clubRequestDto) throws IOException {
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 
@@ -136,11 +125,8 @@ public class ClubService {
     }
 
 
-    // 모임 삭제
     @Transactional
-    public ResponseDto<?> deleteClub(Long clubId, UserDetailsImpl userDetails) {
-
-        Member member = userDetails.getMember();
+    public ResponseDto<?> deleteClub(Long clubId, Member member) {
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 
@@ -157,11 +143,8 @@ public class ClubService {
     }
 
 
-    // 모임 가입하기
     @Transactional
-    public ResponseDto<?> joinClub(Long clubId, UserDetailsImpl userDetails) {
-
-        Member member = userDetails.getMember();
+    public ResponseDto<?> joinClub(Long clubId, Member member) {
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 
@@ -182,11 +165,8 @@ public class ClubService {
     }
 
 
-    // 모임 탈퇴하기
     @Transactional
-    public ResponseDto<?> withdrawClub(Long clubId, UserDetailsImpl userDetails) {
-
-        Member member = userDetails.getMember();
+    public ResponseDto<?> withdrawClub(Long clubId, Member member) {
 
         Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
 
@@ -196,7 +176,7 @@ public class ClubService {
         ClubMember clubMember = clubMemberRepository.findByMemberAndClub(member, club);
 
         if (member.getMemberId().equals(club.getLeader().getMemberId())) {
-            deleteClub(clubId, userDetails);
+            deleteClub(clubId, member);
         } else {
             clubMemberRepository.delete(clubMember);
 

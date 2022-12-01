@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -26,15 +25,15 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName, String clubName) throws IOException {
 
         File uploadFile = convert(multipartFile).orElseThrow(UploadFailException::new);
-        return upload(uploadFile, dirName);
+        return upload(uploadFile, dirName, clubName);
     }
 
-    private String upload(File uploadFile, String dirName) {
+    private String upload(File uploadFile, String dirName, String clubName) {
 
-        String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();
+        String fileName = dirName + "/" + clubName;
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
         return uploadImageUrl;
