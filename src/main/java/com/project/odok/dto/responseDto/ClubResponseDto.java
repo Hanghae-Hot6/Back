@@ -1,4 +1,5 @@
 package com.project.odok.dto.responseDto;
+
 import com.project.odok.entity.Club;
 import com.project.odok.entity.ClubBook;
 import lombok.AllArgsConstructor;
@@ -30,9 +31,12 @@ public class ClubResponseDto {
     private String bookLink2;
     private String bookLink3;
     private String schedule;
+    private String book1;
+    private String book2;
+    private String book3;
 
 
-    public ClubResponseDto(Club club, ClubBook clubBook, Boolean subscription, Boolean interest, String memberNum){
+    public ClubResponseDto(Club club, ClubBook clubBook, Boolean subscription, Boolean interest, String memberNum) {
         this.clubId = club.getClubId();
         this.thumbnail = club.getThumbnail();
         this.clubName = club.getClubName();
@@ -41,7 +45,7 @@ public class ClubResponseDto {
         this.location = club.getLocation();
         this.period = club.getStartDate() + " ~ " + club.getFinishDate();
         this.leader = club.getLeader().getMemberId();
-        this.participantNum = memberNum+"/"+club.getMemberMaxNum(); // 쿼리문 작성해야됨.
+        this.participantNum = memberNum + "/" + club.getMemberMaxNum(); // 쿼리문 작성해야됨.
         this.subscription = subscription;
         this.interest = interest;
         this.clubSummary = club.getClubSummary();
@@ -56,6 +60,9 @@ public class ClubResponseDto {
         this.bookLink2 = clubBook.getBook2() != null ? clubBook.getBook2().getLink() : "책을 선택하세요";
         this.bookLink3 = clubBook.getBook3() != null ? clubBook.getBook3().getLink() : "책을 선택하세요";
         this.schedule = club.getSchedule();
+        this.book1 = clubBook.getBook1() != null ? clubBook.getBook1().getIsbn() : "책을 선택하세요";
+        this.book2 = clubBook.getBook2() != null ? clubBook.getBook2().getIsbn() : "책을 선택하세요";
+        this.book3 = clubBook.getBook3() != null ? clubBook.getBook3().getIsbn() : "책을 선택하세요";
     }
 
 }
