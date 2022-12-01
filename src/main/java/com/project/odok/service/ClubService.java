@@ -10,6 +10,9 @@ import com.project.odok.security.exception.customexceptions.InvalidWriterExcepti
 import com.project.odok.security.exception.customexceptions.NotFoundClubException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -56,6 +59,7 @@ public class ClubService {
     }
 
 
+    @Transactional
     public ResponseDto<?> getClubList() {
 
         List<Club> clubList = clubRepository.findAllByOrderByCreatedAtDesc();
@@ -69,6 +73,7 @@ public class ClubService {
     }
 
 
+    @Transactional
     public ResponseDto<?> getTop5Clubs() {
 
         List<Club> clubList = clubRepository.findTop5ByOrderByVisitNumDesc();
@@ -79,6 +84,23 @@ public class ClubService {
             clubResponseDtoList.add(new ClubsInfoResponseDto(club));
         }
         return ResponseDto.success(clubResponseDtoList);
+    }
+
+
+    @Transactional
+    public ResponseDto<?> searchClub(String clubName, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Club> clubList = clubRepository.findAllByClubNameContainsOrderByVisitNumDesc(clubName,pageable);
+        List<ClubsInfoResponseDto> clubsResponseDtoList = new ArrayList<>();
+
+        for (Club club : clubList) {
+
+            clubsResponseDtoList.add(new ClubsInfoResponseDto(club));
+        }
+
+        return ResponseDto.success(clubsResponseDtoList);
     }
 
 
