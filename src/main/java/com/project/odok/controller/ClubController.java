@@ -37,6 +37,16 @@ public class ClubController {
     }
 
 
+    @GetMapping(value = "/search")
+    public ResponseDto<?> searchClub(@RequestParam("clubName") String clubName,
+                                     @RequestParam("page") int page,
+                                     @RequestParam("size") int size){
+        int pageTemp = page -1;
+
+        return clubService.searchClub(clubName, pageTemp, size);
+    }
+
+
     @GetMapping(value = "/{club-id}")
     public ResponseDto<?> getClub(@PathVariable(name = "club-id") Long clubId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
