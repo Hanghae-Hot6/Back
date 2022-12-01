@@ -2,6 +2,7 @@ package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.TokenDto;
+import com.project.odok.dto.TokenRequestDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.dto.responseDto.MyPageClubResponseDto;
@@ -100,6 +101,21 @@ public class MemberService {
             clubList.add(new MyPageClubResponseDto(interest.getClub()));
         }
         return ResponseDto.success(clubList);
+    }
+
+    public ResponseDto<?> reissue(TokenRequestDto tokenRequestDto, HttpServletResponse response) {
+        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+            return ResponseDto.fail("Refresh Token이 유효하지 않습니다. 다시 로그인을 해주세요.");
+        }
+        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken().substring(7));
+        if (!redisUtil.getData(authentication.getName()).equals(tokenRequestDto.getRefreshToken())) {
+            return ResponseDto.fail("토큰의 유저 정보가 일치하지 않습니다.");
+        }
+
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+        response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtFilter.BEARER_PREFIX + tokenDto.getAccessToken());
+        response.setHeader("Refresh-Token", tokenRequestDto.getRefreshToken());
+        return ResponseDto.success("Access Token을 재발급 하였습니다.");
     }
 }
 
