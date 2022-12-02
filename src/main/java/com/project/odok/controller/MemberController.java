@@ -3,14 +3,11 @@ package com.project.odok.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.TokenRequestDto;
-import com.project.odok.dto.requestDto.member.FindIdRequestDto;
-import com.project.odok.dto.requestDto.member.FindPasswordRequestDto;
-import com.project.odok.dto.requestDto.member.LoginRequestDto;
-import com.project.odok.dto.requestDto.member.SignupRequestDto;
+import com.project.odok.dto.requestDto.member.*;
 import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.service.EmailService;
-import com.project.odok.service.auth.KakaoService;
 import com.project.odok.service.MemberService;
+import com.project.odok.service.auth.KakaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +96,11 @@ public class MemberController {
     @PostMapping("/cs")
     public ResponseDto<?> customerService(@RequestBody String content, @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
         return emailService.customerService(userDetails.getMember(), content);
+    }
+
+    @PostMapping("/modify")
+    public ResponseDto<?> modifyMember(@RequestBody MemberModifyRequestDto memberModifyRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.modifyMember(memberModifyRequestDto, userDetails);
     }
 }
 

@@ -2,6 +2,7 @@ package com.project.odok.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.odok.dto.requestDto.member.MemberModifyRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,25 +59,21 @@ public class Member extends TimeStamped {
 
     public Member updateKakao(Member member, Long kakaoId) {
         this.memberId = member.getMemberId();
-        this.email = member.getEmail();
-        this.username = member.getUsername();
-        this.address = member.getAddress();
-        this.phoneNumber = member.getPhoneNumber();
-        this.password = member.getPassword();
-        this.authority = Authority.ROLE_USER;
         this.kakaoId = kakaoId;
         return member;
     }
 
     public Member updatePassword(Member member, String encodedPassword) {
         this.memberId = member.getMemberId();
-        this.email = member.getEmail();
-        this.username = member.getUsername();
-        this.address = member.getAddress();
-        this.phoneNumber = member.getPhoneNumber();
         this.password = encodedPassword;
-        this.authority = Authority.ROLE_USER;
-        this.kakaoId = member.kakaoId;
+        return member;
+    }
+
+    public Member updateMember(Member member, MemberModifyRequestDto memberModifyRequestDto, String encodedPassword) {
+        this.memberId = member.getMemberId();
+        this.address = memberModifyRequestDto.getAddress();
+        this.phoneNumber = memberModifyRequestDto.getPhoneNumber();
+        this.password = encodedPassword;
         return member;
     }
 

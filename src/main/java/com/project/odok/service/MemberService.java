@@ -4,6 +4,7 @@ import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.TokenDto;
 import com.project.odok.dto.TokenRequestDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
+import com.project.odok.dto.requestDto.member.MemberModifyRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
 import com.project.odok.dto.responseDto.MyPageClubResponseDto;
 import com.project.odok.dto.responseDto.MyPageResponseDto;
@@ -116,6 +117,13 @@ public class MemberService {
         response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtFilter.BEARER_PREFIX + tokenDto.getAccessToken());
         response.setHeader("Refresh-Token", tokenRequestDto.getRefreshToken());
         return ResponseDto.success("Access Token을 재발급 하였습니다.");
+    }
+
+    public ResponseDto<?> modifyMember(MemberModifyRequestDto memberModifyRequestDto, UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        member.updateMember(member, memberModifyRequestDto, passwordEncoder.encode(memberModifyRequestDto.getPassword()));
+        memberRepository.save(member);
+        return ResponseDto.success("회원정보를 수정하였습니다.");
     }
 }
 
