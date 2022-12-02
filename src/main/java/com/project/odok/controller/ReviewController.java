@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reviews")
+@RequestMapping("/clubs")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/{clubid}/getall")
+    @GetMapping("/{clubid}/reviews/getall")
     public ResponseDto<?> getAllReview(@PathVariable(name = "clubid") Long clubId){
         return reviewService.getAllReview(clubId);
     }
 
-    @PostMapping("/{clubid}/create")
+    @PostMapping("/{clubid}/reviews/create")
     public ResponseDto<?> createdReview (@PathVariable(name = "clubid") Long clubId,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @RequestBody ReviewRequestDto reviewRequestDto){
