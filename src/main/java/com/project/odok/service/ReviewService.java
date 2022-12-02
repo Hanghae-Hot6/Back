@@ -2,6 +2,8 @@ package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.requestDto.review.ReviewRequestDto;
+import com.project.odok.dto.responseDto.ClubReviewResponseDto;
+import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ReviewResponseDto;
 import com.project.odok.entity.Club;
 import com.project.odok.entity.Member;
@@ -70,5 +72,25 @@ public class ReviewService {
         }
 
         return ResponseDto.success("리뷰가 삭제 되었습니다.");
+    }
+
+    public ResponseDto<?> getReviewList() {
+
+        List<Club> clubList = clubRepository.findTop3ByOrderByCreatedAtAsc();
+        List<ClubReviewResponseDto> clubReviewList = new ArrayList<>();
+
+        for (Club club : clubList){
+            List<Review> reviewList = reviewRepository.findAllByClubOrderByCreatedAtDesc(club);
+
+            List<ReviewResponseDto> reviewResponseList = new ArrayList<>();
+
+            for (Review review : reviewList) {
+                reviewResponseList.add(new ReviewResponseDto(review));
+            }
+
+            clubReviewList.add(new ClubReviewResponseDto(club,reviewResponseList));
+        }
+
+        return ResponseDto.success(clubReviewList);
     }
 }
