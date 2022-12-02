@@ -30,7 +30,7 @@ public class ReviewService {
                 () -> new RuntimeException("해당 모임이 존재하지 않습니다.")
         );
 
-        List<Review> reviewList = reviewRepository.findAllByOrderByCreatedAtDesc();
+        List<Review> reviewList = reviewRepository.findAllByClubOrderByCreatedAtDesc(club);
 
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
