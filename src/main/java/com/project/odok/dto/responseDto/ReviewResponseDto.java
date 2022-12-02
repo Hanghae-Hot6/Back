@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 public class ReviewResponseDto {
 
     private String memberId;
-    private String commnet;
+    private String comment;
     private LocalDateTime createdAt;
 
     public ReviewResponseDto (Review review){
         this.memberId = review.getMember().getMemberId();
-        this.commnet = review.getComment();
+        this.comment = review.getComment();
         this.createdAt = review.getCreatedAt();
     }
 
