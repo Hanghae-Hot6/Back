@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ReviewResponseDto {
 
+    private Long reviewId;
     private String memberId;
     private String comment;
     private LocalDateTime createdAt;
 
     public ReviewResponseDto (Review review){
+        this.reviewId = review.getReviewId();
         this.memberId = review.getMember().getMemberId();
         this.comment = review.getComment();
         this.createdAt = review.getCreatedAt();

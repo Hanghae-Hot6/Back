@@ -17,6 +17,7 @@ public class ClubResponseDto {
     private String period;
     private String leader;
     private String participantNum;
+    private String memberMaxNum;
     private Boolean subscription;
     private Boolean interest;
     private String clubSummary;
@@ -46,6 +47,7 @@ public class ClubResponseDto {
         this.period = club.getStartDate() + " ~ " + club.getFinishDate();
         this.leader = club.getLeader().getMemberId();
         this.participantNum = memberNum + "/" + club.getMemberMaxNum(); // 쿼리문 작성해야됨.
+        this.memberMaxNum = club.getMemberMaxNum();
         this.subscription = subscription;
         this.interest = interest;
         this.clubSummary = club.getClubSummary();
