@@ -102,5 +102,10 @@ public class MemberController {
     public ResponseDto<?> modifyMember(@RequestBody MemberModifyRequestDto memberModifyRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memberService.modifyMember(memberModifyRequestDto, userDetails);
     }
+
+    @PostMapping("/auth")
+    public ResponseDto<?> auth(@RequestBody String password, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.auth(password, userDetails);
+    }
 }
 

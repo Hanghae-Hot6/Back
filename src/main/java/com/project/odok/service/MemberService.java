@@ -125,5 +125,12 @@ public class MemberService {
         memberRepository.save(member);
         return ResponseDto.success("회원정보를 수정하였습니다.");
     }
+
+    public ResponseDto<?> auth(String password, UserDetailsImpl userDetails) {
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            return ResponseDto.fail("패스워드가 일치하지 않습니다.");
+        }
+        return ResponseDto.success("비밀번호 인증에 성공하셨습니다.");
+    }
 }
 
