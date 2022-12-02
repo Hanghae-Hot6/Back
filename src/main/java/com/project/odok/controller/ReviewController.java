@@ -21,6 +21,11 @@ public class ReviewController {
         return reviewService.getAllReview(clubId);
     }
 
+    @GetMapping("/reviews")
+    public ResponseDto<?> getReviewList(){
+        return reviewService.getReviewList();
+    }
+
     @PostMapping("/{clubid}/reviews/create")
     public ResponseDto<?> createdReview (@PathVariable(name = "clubid") Long clubId,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails,

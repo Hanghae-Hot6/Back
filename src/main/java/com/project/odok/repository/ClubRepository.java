@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findAllByOrderByCreatedAtDesc();
+    List<Club> findTop3ByOrderByCreatedAtAsc();
     List<Club> findTop5ByOrderByVisitNumDesc();
     Page<Club> findAllByClubNameContainsOrderByVisitNumDesc(String clubName, Pageable pageable);
     List<Club> findAllByLeader(Member member);
