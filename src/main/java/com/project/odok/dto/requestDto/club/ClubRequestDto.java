@@ -23,6 +23,7 @@ public class ClubRequestDto {
     private String book3;
 
     private MultipartFile thumbnail;
+    private String beforeThumbnail;
 
     private String memberMaxNum;
 
