@@ -14,4 +14,5 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findTop5ByOrderByVisitNumDesc();
     Page<Club> findAllByClubNameContainsOrderByVisitNumDesc(String clubName, Pageable pageable);
     List<Club> findAllByLeader(Member member);
+    Boolean existsClubByClubName(String clubName);
 }

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
-    ChatRoom findByTitle(String title);
+    ChatRoom findByChatRoomIdAndTitle(String chatRoomId, String title);
 }

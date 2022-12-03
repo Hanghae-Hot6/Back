@@ -35,6 +35,7 @@ public class ClubService {
     private final InterestRepository interestRepository;
     private final ChatRoomService chatRoomService;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomMemberRepository chatRoomMemberRepository;
 
 
     @Transactional
@@ -155,7 +156,9 @@ public class ClubService {
         if (validateMember(member, club))
             throw new InvalidWriterException();
 
-        ChatRoom chatRoom = chatRoomRepository.findByTitle(club.getClubName());
+        ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByClubAndMember(club,member);
+
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdAndTitle(chatRoomMember.getChatRoom().getChatRoomId(),club.getClubName());
 
         clubRepository.delete(club);
 
