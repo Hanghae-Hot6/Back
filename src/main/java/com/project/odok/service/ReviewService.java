@@ -82,6 +82,8 @@ public class ReviewService {
         for (Club club : clubList){
             List<Review> reviewList = reviewRepository.findAllByClubOrderByCreatedAtDesc(club);
 
+            if(reviewList.size() == 0) continue;
+
             List<ReviewResponseDto> reviewResponseList = new ArrayList<>();
 
             for (Review review : reviewList) {
