@@ -5,7 +5,6 @@ import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.TokenRequestDto;
 import com.project.odok.dto.requestDto.member.*;
 import com.project.odok.security.UserDetailsImpl;
-import com.project.odok.service.EmailService;
 import com.project.odok.service.MemberService;
 import com.project.odok.service.auth.KakaoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +23,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final KakaoService kakaoService;
-    private final EmailService emailService;
 
     @PostMapping("/signup")
     @Operation(summary = "Sign Up", description = "회원가입")
@@ -50,57 +48,9 @@ public class MemberController {
         return kakaoService.kakaoLogin(code, response);
     }
 
-    @GetMapping("/mypage")
-    @Operation(summary = "My Page", description = "마이페이지")
-    public ResponseDto<?> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return memberService.myPage(userDetails);
-    }
-
-    @GetMapping("/mypage/leader")
-    @Operation(summary = "내가 만든 모임", description = "내가 만든 모임 리스트")
-    public ResponseDto<?> myPageMadeByMe(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return memberService.myPageMadeByMe(userDetails);
-    }
-
-    @GetMapping("/mypage/interest")
-    @Operation(summary = "관심 있는 모임", description = "내가 관심 있는 모임 리스트")
-    public ResponseDto<?> myPageInterest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return memberService.myPageInterest(userDetails);
-    }
-
-    @GetMapping("/mailConfirm")
-    public ResponseDto<?> mailConfirm(@RequestParam String email) throws Exception {
-        return emailService.sendSimpleMessage(email);
-    }
-
-    @GetMapping("/mailAuth")
-    public ResponseDto<?> mailAuth(@RequestParam String code) {
-        return emailService.verifyEmail(code);
-    }
-
-    @PostMapping("findId")
-    public ResponseDto<?> findId(@RequestBody FindIdRequestDto requestDto) throws Exception {
-        return emailService.sendIdMessage(requestDto);
-    }
-
-    @PostMapping("findPassword")
-    public ResponseDto<?> findPassword(@RequestBody FindPasswordRequestDto findPasswordRequestDto) throws Exception {
-        return emailService.sendPasswordMessage(findPasswordRequestDto);
-    }
-
     @PostMapping("/reissue")
     public ResponseDto<?> reissue(@RequestBody TokenRequestDto tokenRequestDto, HttpServletResponse response) {
         return memberService.reissue(tokenRequestDto, response);
-    }
-
-    @PostMapping("/cs")
-    public ResponseDto<?> customerService(@RequestBody String content, @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
-        return emailService.customerService(userDetails.getMember(), content);
-    }
-
-    @PostMapping("/modify")
-    public ResponseDto<?> modifyMember(@RequestBody MemberModifyRequestDto memberModifyRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return memberService.modifyMember(memberModifyRequestDto, userDetails);
     }
 
     @PostMapping("/auth")

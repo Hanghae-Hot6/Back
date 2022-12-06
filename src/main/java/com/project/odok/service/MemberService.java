@@ -6,11 +6,6 @@ import com.project.odok.dto.TokenRequestDto;
 import com.project.odok.dto.requestDto.member.LoginRequestDto;
 import com.project.odok.dto.requestDto.member.MemberModifyRequestDto;
 import com.project.odok.dto.requestDto.member.SignupRequestDto;
-import com.project.odok.dto.responseDto.MyPageClubResponseDto;
-import com.project.odok.dto.responseDto.MyPageResponseDto;
-import com.project.odok.entity.Club;
-import com.project.odok.entity.ClubMember;
-import com.project.odok.entity.Interest;
 import com.project.odok.entity.Member;
 import com.project.odok.repository.ClubMemberRepository;
 import com.project.odok.repository.ClubRepository;
@@ -29,17 +24,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final ClubRepository clubRepository;
-    private final ClubMemberRepository clubMemberRepository;
-    private final InterestRepository interestRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -62,46 +52,19 @@ public class MemberService {
     }
 
     public ResponseDto<?> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         Member member = memberRepository.findById(loginRequestDto.getMemberId())
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword()))
             throw new RuntimeException("패스워드가 일치하지 않습니다.");
+
+        UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
         redisUtil.setDataExpire(authentication.getName(), tokenDto.getRefreshToken(), REFRESH_TOKEN_EXPIRE_TIME);
         response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtFilter.BEARER_PREFIX + tokenDto.getAccessToken());
         response.setHeader("Refresh-Token", tokenDto.getRefreshToken());
         return ResponseDto.success("로그인 성공");
-    }
-
-    public ResponseDto<?> myPage(UserDetailsImpl userDetails) {
-        List<ClubMember> joinClub = clubMemberRepository.findAllByMember(userDetails.getMember());
-        List<MyPageClubResponseDto> clubList = new ArrayList<>();
-
-        for (ClubMember club:joinClub) {
-            clubList.add(new MyPageClubResponseDto(club.getClub()));
-        }
-        return ResponseDto.success(new MyPageResponseDto(userDetails.getMember(), clubList));
-    }
-
-    public ResponseDto<?> myPageMadeByMe(UserDetailsImpl userDetails) {
-        List<Club> madeClub = clubRepository.findAllByLeader(userDetails.getMember());
-        List<MyPageClubResponseDto> clubList = new ArrayList<>();
-        for (Club club : madeClub) {
-            clubList.add(new MyPageClubResponseDto(club));
-        }
-        return ResponseDto.success(clubList);
-    }
-
-    public ResponseDto<?> myPageInterest(UserDetailsImpl userDetails) {
-        List<Interest> interestClub = interestRepository.findAllByMember(userDetails.getMember());
-        List<MyPageClubResponseDto> clubList = new ArrayList<>();
-        for (Interest interest : interestClub) {
-            clubList.add(new MyPageClubResponseDto(interest.getClub()));
-        }
-        return ResponseDto.success(clubList);
     }
 
     public ResponseDto<?> reissue(TokenRequestDto tokenRequestDto, HttpServletResponse response) {
