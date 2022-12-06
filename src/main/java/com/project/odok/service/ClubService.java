@@ -6,8 +6,8 @@ import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ClubResponseDto;
 import com.project.odok.entity.*;
 import com.project.odok.repository.*;
-import com.project.odok.security.exception.customexceptions.InvalidWriterException;
-import com.project.odok.security.exception.customexceptions.NotFoundClubException;
+import com.project.odok.security.exception.ErrorCode;
+import com.project.odok.security.exception.OdokExceptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -93,7 +93,7 @@ public class ClubService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Club> clubList = clubRepository.findAllByClubNameContainsOrderByVisitNumDesc(clubName,pageable);
+        Page<Club> clubList = clubRepository.findAllByClubNameContainsOrderByVisitNumDesc(clubName, pageable);
         List<ClubsInfoResponseDto> clubsResponseDtoList = new ArrayList<>();
 
         for (Club club : clubList) {
@@ -108,18 +108,18 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> getClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
         club.updateVisitCount();
 
         ClubBook clubBook = clubBookReqository.findByClub(club);
 
         Integer clubMemberNum = clubMemberRepository.countAllByClub(club);
 
-        if (!clubMemberRepository.existsByMemberAndClub(member, club) && !interestRepository.existsByMemberAndClub(member, club)) {
+        if (!subscriptionCheck(member, club) && !interestCheck(member, club)) {
             return ResponseDto.success(new ClubResponseDto(club, clubBook, false, false, String.valueOf(clubMemberNum)));
-        } else if (!clubMemberRepository.existsByMemberAndClub(member, club) && interestRepository.existsByMemberAndClub(member, club)) {
+        } else if (!subscriptionCheck(member, club) && interestCheck(member, club)) {
             return ResponseDto.success(new ClubResponseDto(club, clubBook, false, true, String.valueOf(clubMemberNum)));
-        } else if (clubMemberRepository.existsByMemberAndClub(member, club) && !interestRepository.existsByMemberAndClub(member, club)) {
+        } else if (subscriptionCheck(member, club) && !interestCheck(member, club)) {
             return ResponseDto.success(new ClubResponseDto(club, clubBook, true, false, String.valueOf(clubMemberNum)));
         } else {
             return ResponseDto.success(new ClubResponseDto(club, clubBook, true, true, String.valueOf(clubMemberNum)));
@@ -130,10 +130,10 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> updateClub(Long clubId, Member member, ClubRequestDto clubRequestDto) throws IOException {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
         if (validateMember(member, club))
-            throw new InvalidWriterException();
+            throw new OdokExceptions(ErrorCode.INVALID_WRITER);
 
         Book book1 = bookRepository.findByIsbn(clubRequestDto.getBook1());
         Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
@@ -141,8 +141,12 @@ public class ClubService {
 
         ClubBook clubBook = clubBookReqository.findByClub(club);
 
+        ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByClubAndMember(club, member);
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdAndTitle(chatRoomMember.getChatRoom().getChatRoomId(), club.getClubName());
+
         club.update(clubRequestDto, s3UploadService, dir);
         clubBook.update(book1, book2, book3, clubRequestDto);
+        chatRoom.update(clubRequestDto);
 
         return ResponseDto.success("모임정보 수정 완료");
     }
@@ -151,17 +155,15 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> deleteClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
         if (validateMember(member, club))
-            throw new InvalidWriterException();
+            throw new OdokExceptions(ErrorCode.INVALID_WRITER);
 
-        ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByClubAndMember(club,member);
-
-        ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdAndTitle(chatRoomMember.getChatRoom().getChatRoomId(),club.getClubName());
+        ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByClubAndMember(club, member);
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdAndTitle(chatRoomMember.getChatRoom().getChatRoomId(), club.getClubName());
 
         clubRepository.delete(club);
-
         chatRoomRepository.delete(chatRoom);
 
         return ResponseDto.success("모임 삭제 완료");
@@ -171,7 +173,7 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> joinClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
         if (clubMemberRepository.countAllByClub(club) >= Integer.parseInt(club.getMemberMaxNum())) {
             return ResponseDto.fail("가입 정원이 초과되었습니다.");
@@ -179,7 +181,7 @@ public class ClubService {
 
         ClubMember clubMember = new ClubMember(club, member);
 
-        if (!clubMemberRepository.existsByMemberAndClub(member, club)) {
+        if (!subscriptionCheck(member, club)) {
             clubMemberRepository.save(clubMember);
 
             chatRoomService.addMemberChatRoom(member, club);
@@ -193,9 +195,9 @@ public class ClubService {
     @Transactional
     public ResponseDto<?> withdrawClub(Long clubId, Member member) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(NotFoundClubException::new);
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
-        if (!clubMemberRepository.existsByMemberAndClub(member, club))
+        if (!subscriptionCheck(member, club))
             return ResponseDto.success("모임에 가입하지 않은 유저입니다.");
 
         ClubMember clubMember = clubMemberRepository.findByMemberAndClub(member, club);
@@ -214,6 +216,14 @@ public class ClubService {
 
     public boolean validateMember(Member member, Club club) {
         return !member.getMemberId().equals(club.getLeader().getMemberId());
+    }
+
+    public boolean subscriptionCheck(Member member, Club club) {
+        return clubMemberRepository.existsByMemberAndClub(member, club);
+    }
+
+    public boolean interestCheck(Member member, Club club) {
+        return interestRepository.existsByMemberAndClub(member, club);
     }
 
 }

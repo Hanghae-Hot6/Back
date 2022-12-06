@@ -4,6 +4,8 @@ import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.responseDto.ChatRoomMemberResponseDto;
 import com.project.odok.entity.*;
 import com.project.odok.repository.*;
+import com.project.odok.security.exception.ErrorCode;
+import com.project.odok.security.exception.OdokExceptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -87,11 +89,9 @@ public class ChatRoomService {
 
     // 특정 채팅방 조회
     public ResponseDto<?> findOneRoom(String roomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
-                () -> new RuntimeException("해당 채팅방이 존재하지 않습니다.")
-        );
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CHATROOM));
+
         return ResponseDto.success(chatRoom.getTitle() + " 채팅방이 조회 되었습니다.");
     }
-
 
 }

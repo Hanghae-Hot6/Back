@@ -1,7 +1,6 @@
 package com.project.odok.service;
 
 import com.project.odok.dto.ResponseDto;
-import com.project.odok.dto.requestDto.member.MemberModifyRequestDto;
 import com.project.odok.dto.responseDto.MyPageClubResponseDto;
 import com.project.odok.dto.responseDto.MyPageResponseDto;
 import com.project.odok.entity.Club;
@@ -12,10 +11,7 @@ import com.project.odok.repository.ClubRepository;
 import com.project.odok.repository.InterestRepository;
 import com.project.odok.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;

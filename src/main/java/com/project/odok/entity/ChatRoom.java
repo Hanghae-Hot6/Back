@@ -1,5 +1,6 @@
 package com.project.odok.entity;
 
+import com.project.odok.dto.requestDto.club.ClubRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,10 @@ public class ChatRoom extends TimeStamped{
     public ChatRoom(String chatRoomId, String title){
         this.chatRoomId = chatRoomId;
         this.title = title;
+    }
+
+    public void update(ClubRequestDto clubRequestDto){
+        this.title = clubRequestDto.getClubName();
     }
 
     public String chatDate(){

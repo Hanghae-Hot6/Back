@@ -3,7 +3,6 @@ package com.project.odok.service;
 import com.project.odok.dto.ResponseDto;
 import com.project.odok.dto.requestDto.review.ReviewRequestDto;
 import com.project.odok.dto.responseDto.ClubReviewResponseDto;
-import com.project.odok.dto.responseDto.ClubsInfoResponseDto;
 import com.project.odok.dto.responseDto.ReviewResponseDto;
 import com.project.odok.entity.Club;
 import com.project.odok.entity.Member;
@@ -12,6 +11,8 @@ import com.project.odok.repository.ClubRepository;
 import com.project.odok.repository.MemberRepository;
 import com.project.odok.repository.ReviewRepository;
 import com.project.odok.security.UserDetailsImpl;
+import com.project.odok.security.exception.ErrorCode;
+import com.project.odok.security.exception.OdokExceptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +28,8 @@ public class ReviewService {
     private final MemberRepository memberRepository;
 
 
-    public ResponseDto<?> getAllReview (Long clubId){
-        Club club = clubRepository.findById(clubId).orElseThrow(
-                () -> new RuntimeException("해당 모임이 존재하지 않습니다.")
-        );
+    public ResponseDto<?> getAllReview(Long clubId) {
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
         List<Review> reviewList = reviewRepository.findAllByClubOrderByCreatedAtDesc(club);
 
@@ -43,15 +42,11 @@ public class ReviewService {
         return ResponseDto.success(reviewResponseDtoList);
     }
 
-    public ResponseDto<?> createdReivew (Long clubId, UserDetailsImpl userDetails, ReviewRequestDto reviewRequestDto){
+    public ResponseDto<?> createReview(Long clubId, UserDetailsImpl userDetails, ReviewRequestDto reviewRequestDto) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(
-                () -> new RuntimeException("해당 모임은 존재하지 않습니다.")
-        );
+        Club club = clubRepository.findById(clubId).orElseThrow(()-> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
-        Member member = memberRepository.findById(userDetails.getMember().getMemberId()).orElseThrow(
-                () -> new RuntimeException("아이디가 존재하지 않습니다. 회원 가입 후 리뷰 등록을 해주시기 바랍니다.")
-        );
+        Member member = memberRepository.findById(userDetails.getMember().getMemberId()).orElseThrow(()-> new OdokExceptions(ErrorCode.NOT_FOUND_MEMBER));
 
         Review review = new Review(member, club, reviewRequestDto);
         reviewRepository.save(review);
@@ -59,16 +54,14 @@ public class ReviewService {
         return ResponseDto.success("리뷰 등록 완료");
     }
 
-    public ResponseDto<?> deleteReview (Long reviewId, UserDetailsImpl userDetails){
+    public ResponseDto<?> deleteReview(Long reviewId, UserDetailsImpl userDetails) {
 
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new RuntimeException("해당 리뷰가 존재하지 않습니다.")
-        );
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_REVIEW));
 
-        if(review.getMember().getMemberId().equals(userDetails.getMember().getMemberId())){
+        if (review.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
             reviewRepository.deleteById(reviewId);
         } else {
-            throw new RuntimeException("해당 리뷰 작성자가 아니므로 삭제 실패");
+            throw new OdokExceptions(ErrorCode.INVALID_WRITER);
         }
 
         return ResponseDto.success("리뷰가 삭제 되었습니다.");
@@ -79,10 +72,10 @@ public class ReviewService {
         List<Club> clubList = clubRepository.findTop3ByOrderByCreatedAtAsc();
         List<ClubReviewResponseDto> clubReviewList = new ArrayList<>();
 
-        for (Club club : clubList){
+        for (Club club : clubList) {
             List<Review> reviewList = reviewRepository.findAllByClubOrderByCreatedAtDesc(club);
 
-            if(reviewList.size() == 0) continue;
+            if (reviewList.size() == 0) continue;
 
             List<ReviewResponseDto> reviewResponseList = new ArrayList<>();
 
@@ -90,7 +83,7 @@ public class ReviewService {
                 reviewResponseList.add(new ReviewResponseDto(review));
             }
 
-            clubReviewList.add(new ClubReviewResponseDto(club,reviewResponseList));
+            clubReviewList.add(new ClubReviewResponseDto(club, reviewResponseList));
         }
 
         return ResponseDto.success(clubReviewList);

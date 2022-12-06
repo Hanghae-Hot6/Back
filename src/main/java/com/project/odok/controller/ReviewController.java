@@ -30,7 +30,7 @@ public class ReviewController {
     public ResponseDto<?> createdReview (@PathVariable(name = "clubid") Long clubId,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @RequestBody ReviewRequestDto reviewRequestDto){
-        return reviewService.createdReivew(clubId, userDetails, reviewRequestDto);
+        return reviewService.createReview(clubId, userDetails, reviewRequestDto);
     }
 
     @DeleteMapping("/{reviewid}/delete")
