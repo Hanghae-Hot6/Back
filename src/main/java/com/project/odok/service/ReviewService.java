@@ -44,9 +44,9 @@ public class ReviewService {
 
     public ResponseDto<?> createReview(Long clubId, UserDetailsImpl userDetails, ReviewRequestDto reviewRequestDto) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(()-> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
-        Member member = memberRepository.findById(userDetails.getMember().getMemberId()).orElseThrow(()-> new OdokExceptions(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = memberRepository.findById(userDetails.getMember().getMemberId()).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_MEMBER));
 
         Review review = new Review(member, club, reviewRequestDto);
         reviewRepository.save(review);
@@ -67,15 +67,14 @@ public class ReviewService {
         return ResponseDto.success("리뷰가 삭제 되었습니다.");
     }
 
+    // 리팩토링 가장 필요
     public ResponseDto<?> getReviewList() {
 
-        List<Club> clubList = clubRepository.findTop3ByOrderByCreatedAtAsc();
+        List<Club> clubList = clubRepository.findAllByOrderByFinishDateAsc();
         List<ClubReviewResponseDto> clubReviewList = new ArrayList<>();
 
         for (Club club : clubList) {
             List<Review> reviewList = reviewRepository.findAllByClubOrderByCreatedAtDesc(club);
-
-            if (reviewList.size() == 0) continue;
 
             List<ReviewResponseDto> reviewResponseList = new ArrayList<>();
 
@@ -83,7 +82,12 @@ public class ReviewService {
                 reviewResponseList.add(new ReviewResponseDto(review));
             }
 
+            if (reviewList.size() == 0) continue;
+
             clubReviewList.add(new ClubReviewResponseDto(club, reviewResponseList));
+
+            if (clubReviewList.size() == 3)
+                return ResponseDto.success(clubReviewList);
         }
 
         return ResponseDto.success(clubReviewList);
