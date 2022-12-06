@@ -68,7 +68,7 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         // 카카오 RestAPI
         body.add("client_id", "876482e3e44b9d3cf41e27b33e243267");
-        body.add("redirect_uri", "https://www.o-dok.com/login");
+        body.add("redirect_uri", "https://o-dok.com/login");
         body.add("code", code);
 
         // HTTP 요청 보내기
