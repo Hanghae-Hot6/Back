@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Error {
-
-    private String code;
-    private String message;
-
+public class OdokExceptions extends RuntimeException {
+    private ErrorCode errorCode;
 }

@@ -12,6 +12,8 @@ import com.project.odok.repository.ClubRepository;
 import com.project.odok.repository.InterestRepository;
 import com.project.odok.repository.MemberRepository;
 import com.project.odok.security.UserDetailsImpl;
+import com.project.odok.security.exception.ErrorCode;
+import com.project.odok.security.exception.OdokExceptions;
 import com.project.odok.security.jwt.JwtFilter;
 import com.project.odok.security.jwt.TokenProvider;
 import com.project.odok.service.util.RedisUtil;
@@ -53,9 +55,9 @@ public class MemberService {
 
     public ResponseDto<?> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         Member member = memberRepository.findById(loginRequestDto.getMemberId())
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_MEMBER));
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword()))
-            throw new RuntimeException("패스워드가 일치하지 않습니다.");
+            throw new OdokExceptions(ErrorCode.NOT_MATCHED_PASSWORD);
 
         UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
