@@ -6,6 +6,7 @@ import com.project.odok.security.UserDetailsImpl;
 import com.project.odok.service.ClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class ClubController {
 
     @PostMapping
     public ResponseDto<?> createClub(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                     @ModelAttribute ClubRequestDto clubRequestDto) throws IOException{
+                                     @ModelAttribute @Validated ClubRequestDto clubRequestDto) throws IOException{
 
         return clubService.createClub(userDetails.getMember(), clubRequestDto);
     }

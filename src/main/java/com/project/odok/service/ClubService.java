@@ -176,7 +176,7 @@ public class ClubService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
 
         if (clubMemberRepository.countAllByClub(club) >= Integer.parseInt(club.getMemberMaxNum())) {
-            return ResponseDto.fail("가입 정원이 초과되었습니다.");
+            return ResponseDto.success("가입 정원이 초과되었습니다.");
         }
 
         ClubMember clubMember = new ClubMember(club, member);

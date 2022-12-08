@@ -54,7 +54,7 @@ public class Club extends TimeStamped{
 
     public Club(ClubRequestDto clubRequestDto, Member member, S3UploadService s3UploadService, String dir) throws IOException{
         this.clubName = clubRequestDto.getClubName();
-        this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir, clubRequestDto.getClubName()) : null;
+        this.thumbnail = clubRequestDto.getThumbnail() != null? s3UploadService.upload(clubRequestDto.getThumbnail(), dir, clubRequestDto.getClubName()) : "https://odok-s3.s3.ap-northeast-2.amazonaws.com//odok/defaultImage-dkckasdklnbeijnekbnprkdo";
         this.category = clubRequestDto.getCategory();
         this.memberMaxNum = clubRequestDto.getMemberMaxNum();
         this.startDate = clubRequestDto.getStartDate();
