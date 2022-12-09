@@ -7,6 +7,9 @@ import com.project.odok.entity.ChatMessage;
 import com.project.odok.repository.*;
 import com.project.odok.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,8 +25,9 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
 
-    public ResponseDto<?> getMessages(UserDetailsImpl userDetails, String roomNo) {
-        List<ChatMessage> messageList = chatMessageRepository.findAllByChatRoomId(roomNo);
+    public ResponseDto<?> getMessages(UserDetailsImpl userDetails, String roomNo, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ChatMessage> messageList = chatMessageRepository.findAllByChatRoomId(roomNo, pageable);
         List<MessageResponseDto> messageResponseDtoList = new ArrayList<>();
         for (ChatMessage chatMessage : messageList) {
             messageResponseDtoList.add(MessageResponseDto.builder()

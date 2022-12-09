@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,8 +21,13 @@ public class ChatMessageController {
     private final SimpMessageSendingOperations simpMessageSendingOperations;
 
     @GetMapping("/chat/messages/{roomNo}")
-    public ResponseDto<?> getMessages(@PathVariable String roomNo, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return chatMessageService.getMessages(userDetails, roomNo);
+    public ResponseDto<?> getMessages(@PathVariable String roomNo,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                      @RequestParam("page") int page,
+                                      @RequestParam("size") int size) {
+        int pageTemp = page - 1;
+
+        return chatMessageService.getMessages(userDetails, roomNo, pageTemp, size);
     }
 
     @MessageMapping("/chat/message")
