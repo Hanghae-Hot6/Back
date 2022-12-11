@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 @Service
@@ -26,9 +24,14 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
     public ResponseDto<?> getMessages(UserDetailsImpl userDetails, String roomNo, int page, int size) {
+
+        Long chatMessageCount = chatMessageRepository.countChatMessagesByChatRoomId(roomNo);
+
         Pageable pageable = PageRequest.of(page, size);
         Page<ChatMessage> messageList = chatMessageRepository.findAllByChatRoomId(roomNo, pageable);
-        List<MessageResponseDto> messageResponseDtoList = new ArrayList<>();
+
+        List<Object> messageResponseDtoList = new ArrayList<>();
+
         for (ChatMessage chatMessage : messageList) {
             messageResponseDtoList.add(MessageResponseDto.builder()
                     .chatRoomId(chatMessage.getChatRoomId())
@@ -39,6 +42,11 @@ public class ChatMessageService {
                     .build()
             );
         }
+
+        Map<String, Long> mapchatMessageCount = new HashMap<>();
+        mapchatMessageCount.put("chatMessageCount", chatMessageCount);
+
+        messageResponseDtoList.add(mapchatMessageCount);
 
         return ResponseDto.success(messageResponseDtoList);
     }
