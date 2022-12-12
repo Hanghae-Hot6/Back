@@ -30,7 +30,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final BookRepository bookRepository;
     private final ClubMemberRepository clubMemberRepository;
-    private final ClubBookReqository clubBookReqository;
+    private final ClubBookRepository clubBookRepository;
     private final S3UploadService s3UploadService;
     private final InterestRepository interestRepository;
     private final ChatRoomService chatRoomService;
@@ -49,7 +49,7 @@ public class ClubService {
         Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());
 
         ClubBook clubBook = new ClubBook(club, book1, book2, book3, clubRequestDto);
-        clubBookReqository.save(clubBook);
+        clubBookRepository.save(clubBook);
 
         ClubMember clubMember = new ClubMember(club, member);
         clubMemberRepository.save(clubMember);
@@ -111,7 +111,7 @@ public class ClubService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new OdokExceptions(ErrorCode.NOT_FOUND_CLUB));
         club.updateVisitCount();
 
-        ClubBook clubBook = clubBookReqository.findByClub(club);
+        ClubBook clubBook = clubBookRepository.findByClub(club);
 
         Integer clubMemberNum = clubMemberRepository.countAllByClub(club);
 
@@ -139,7 +139,7 @@ public class ClubService {
         Book book2 = bookRepository.findByIsbn(clubRequestDto.getBook2());
         Book book3 = bookRepository.findByIsbn(clubRequestDto.getBook3());
 
-        ClubBook clubBook = clubBookReqository.findByClub(club);
+        ClubBook clubBook = clubBookRepository.findByClub(club);
 
         ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByClubAndMember(club, member);
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdAndTitle(chatRoomMember.getChatRoom().getChatRoomId(), club.getClubName());
