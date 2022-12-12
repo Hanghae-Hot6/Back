@@ -22,12 +22,11 @@ public class ChatMessageController {
 
     @GetMapping("/chat/messages/{roomNo}")
     public ResponseDto<?> getMessages(@PathVariable String roomNo,
-                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestParam("page") int page,
                                       @RequestParam("size") int size) {
         int pageTemp = page - 1;
 
-        return chatMessageService.getMessages(userDetails, roomNo, pageTemp, size);
+        return chatMessageService.getMessages(roomNo, pageTemp, size);
     }
 
     @MessageMapping("/chat/message")

@@ -23,12 +23,12 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
 
-    public ResponseDto<?> getMessages(UserDetailsImpl userDetails, String roomNo, int page, int size) {
+    public ResponseDto<?> getMessages(String roomNo, int page, int size) {
 
         Long chatMessageCount = chatMessageRepository.countChatMessagesByChatRoomId(roomNo);
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ChatMessage> messageList = chatMessageRepository.findAllByChatRoomId(roomNo, pageable);
+        Page<ChatMessage> messageList = chatMessageRepository.findAllByChatRoomIdOrderByDateDesc(roomNo, pageable);
 
         List<MessageResponseDto> messageResponseDtoList = new ArrayList<>();
 
