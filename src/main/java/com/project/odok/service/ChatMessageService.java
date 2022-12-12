@@ -30,7 +30,7 @@ public class ChatMessageService {
         Pageable pageable = PageRequest.of(page, size);
         Page<ChatMessage> messageList = chatMessageRepository.findAllByChatRoomId(roomNo, pageable);
 
-        List<Object> messageResponseDtoList = new ArrayList<>();
+        List<MessageResponseDto> messageResponseDtoList = new ArrayList<>();
 
         for (ChatMessage chatMessage : messageList) {
             messageResponseDtoList.add(MessageResponseDto.builder()
@@ -43,12 +43,14 @@ public class ChatMessageService {
             );
         }
 
-        Map<String, Long> mapchatMessageCount = new HashMap<>();
-        mapchatMessageCount.put("chatMessageCount", chatMessageCount);
+        Map<String, Long> mapChatMessageCount = new HashMap<>();
+        mapChatMessageCount.put("chatMessageCount", chatMessageCount);
 
-        messageResponseDtoList.add(mapchatMessageCount);
+        List<Object> chatInfo = new ArrayList<>();
+        chatInfo.add(messageResponseDtoList);
+        chatInfo.add(mapChatMessageCount);
 
-        return ResponseDto.success(messageResponseDtoList);
+        return ResponseDto.success(chatInfo);
     }
 
     public Object sendMessage(MessageRequestDto requestDto){
