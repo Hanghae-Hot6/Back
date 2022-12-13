@@ -10,5 +10,5 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     Long countChatMessagesByChatRoomId(String chatRoomId);
 
-    String deleteAllbyChatRoomId(String chatRoomId);
+    void deleteAllByChatRoomId(String chatRoomId);
 }
