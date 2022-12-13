@@ -34,7 +34,8 @@ public class S3UploadService {
 
     private String upload(File uploadFile, String dirName, String clubName) {
 
-        String fileName = dirName + "/" + clubName;
+        String beforeFileName = dirName + "/" + clubName;
+        String fileName = filenameReplaceAll(beforeFileName);
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
         return uploadImageUrl;
@@ -62,5 +63,12 @@ public class S3UploadService {
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+
+    private String filenameReplaceAll(String beforeFileName){
+        String match = "[^\uAC00-\uD7A30-9a-zA-Z]";
+        beforeFileName = beforeFileName.replaceAll(match, "");
+        String fileName = beforeFileName.contains(" ")? beforeFileName.trim() : beforeFileName;
+        return fileName;
     }
 }
