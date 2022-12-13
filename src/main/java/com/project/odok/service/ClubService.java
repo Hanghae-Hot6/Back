@@ -166,7 +166,7 @@ public class ClubService {
 
         clubRepository.delete(club);
         chatRoomRepository.delete(chatRoom);
-        chatMessageRepository.deleteAllbyChatRoomId(chatRoom.getChatRoomId());
+        chatMessageRepository.deleteAllByChatRoomId(chatRoom.getChatRoomId());
 
         return ResponseDto.success("모임 삭제 완료");
     }
