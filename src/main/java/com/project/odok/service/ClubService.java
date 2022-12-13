@@ -36,6 +36,7 @@ public class ClubService {
     private final ChatRoomService chatRoomService;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
 
     @Transactional
@@ -165,6 +166,7 @@ public class ClubService {
 
         clubRepository.delete(club);
         chatRoomRepository.delete(chatRoom);
+        chatMessageRepository.deleteAllbyChatRoomId(chatRoom.getChatRoomId());
 
         return ResponseDto.success("모임 삭제 완료");
     }
